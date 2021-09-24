@@ -1,8 +1,9 @@
 package holdkrykke.mp1.client;
 
-import dk.dd.grpc.HelloRequest;
-import dk.dd.grpc.HelloResponse;
-import dk.dd.grpc.HelloServiceGrpc;
+
+import holdkrykke.mp1.HelloRequest;
+import holdkrykke.mp1.HelloResponse;
+import holdkrykke.mp1.HelloServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.springframework.stereotype.Component;

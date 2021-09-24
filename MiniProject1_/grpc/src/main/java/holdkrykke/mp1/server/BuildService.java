@@ -1,9 +1,9 @@
 package holdkrykke.mp1.server;
 
 
-import dk.dd.grpc.HelloRequest;
-import dk.dd.grpc.HelloResponse;
-import dk.dd.grpc.HelloServiceGrpc;
+import holdkrykke.mp1.HelloRequest;
+import holdkrykke.mp1.HelloResponse;
+import holdkrykke.mp1.HelloServiceGrpc;
 import io.grpc.stub.StreamObserver;
 
 public class BuildService extends HelloServiceGrpc.HelloServiceImplBase
