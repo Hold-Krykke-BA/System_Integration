@@ -6,6 +6,7 @@ import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
 // Create grpc server at port 8080 and add the service to it
+// Start the grpc service by running this main method
 public class BuildServer
 {
             public static void main(String[] args) throws IOException, InterruptedException
