@@ -21,7 +21,7 @@ public class Soap2Application {
             System.out.println("Choose search term:");
             String searchTerm = scanner.nextLine();
 
-            ResponseWrapper response =  service.searchPublications(searchTerm, "lite", "*", "5", "CITED desc", "true", "ac@ebi.ac.uk");
+            ResponseWrapper response =  service.searchPublications(searchTerm, "", "", "", "", "true", "");
             for (Result res : response.getResultList()){
                 if (res.getDoi() != null) System.out.println("DOI: " + res.getDoi());
                 if (res.getCitationId() != null) System.out.println("Citation ID: " + res.getCitationId());
@@ -30,8 +30,6 @@ public class Soap2Application {
                 if (res.getPubYear() != null) System.out.println("Publication Year: " + res.getPubYear());
                 System.out.println("");
             }
-
-
         }
         catch (ServiceException | RemoteException ex) {
         }
