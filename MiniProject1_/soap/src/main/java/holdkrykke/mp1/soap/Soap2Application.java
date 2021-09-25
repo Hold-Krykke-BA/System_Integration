@@ -12,7 +12,6 @@ public class Soap2Application {
 
     public static void main(String[] args){
         try {
-
             WSCitationImplServiceLocator locator = new WSCitationImplServiceLocator();
             WSCitationImpl service = locator.getWSCitationImplPort();
 
@@ -22,6 +21,7 @@ public class Soap2Application {
             String searchTerm = scanner.nextLine();
 
             ResponseWrapper response =  service.searchPublications(searchTerm, "", "", "", "", "true", "");
+            System.out.println("\n\n\nSEARCH RESULT:\n");
             for (Result res : response.getResultList()){
                 if (res.getDoi() != null) System.out.println("DOI: " + res.getDoi());
                 if (res.getCitationId() != null) System.out.println("Citation ID: " + res.getCitationId());
