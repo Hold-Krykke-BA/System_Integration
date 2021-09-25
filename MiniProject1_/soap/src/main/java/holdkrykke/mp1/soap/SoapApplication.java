@@ -17,7 +17,7 @@ public class SoapApplication {
             CalculatorSoap_PortType service = locator.getCalculatorSoap();
 
             Scanner scanner = new Scanner(System.in);
-            System.out.println("School SOAP free calculator");
+            System.out.println("Free and shitty SOAP School calculator");
             System.out.println("Choose operator:\n1) Add\n2) Subtract\n3) Multiply\n4) Integer division\n5) Exit");
 
             int operatorChoice = Integer.parseInt(scanner.nextLine());
@@ -65,9 +65,5 @@ public class SoapApplication {
         }
         catch (ServiceException | RemoteException ex) {
         }
-    }
-
-    private void input(){
-
     }
 }
