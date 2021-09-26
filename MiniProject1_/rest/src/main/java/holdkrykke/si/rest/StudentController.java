@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class StudentController {
@@ -32,7 +31,7 @@ public class StudentController {
     }
 
     @PostMapping("/students")
-    private ResponseEntity<Object> saveStudent(@RequestBody Student student) {
+    private ResponseEntity<Object> saveOrUpdateStudent(@RequestBody Student student) {
         service.saveOrUpdate(student);
         HashMap<String, String> result = new HashMap<>();
         result.put("status", "Success");

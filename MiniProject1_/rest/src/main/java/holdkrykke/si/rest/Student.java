@@ -87,7 +87,6 @@ public class Student {
     }
 
     @Entity()
-
     public static class Grade {
         private @Id
         @GeneratedValue
