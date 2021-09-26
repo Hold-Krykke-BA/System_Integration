@@ -88,7 +88,7 @@ public class Student {
 
     @Entity()
 
-    private static class Grade {
+    public static class Grade {
         private @Id
         @GeneratedValue
         Long id;
@@ -103,6 +103,29 @@ public class Student {
             this.subject = subject;
             this.year = year;
             this.grade = grade;
+        }
+
+        public Grade(String subject, String year, String grade, Student student) {
+            this.subject = subject;
+            this.year = year;
+            this.grade = grade;
+            this.student = student;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public Student getStudent() {
+            return student;
+        }
+
+        public void setStudent(Student student) {
+            this.student = student;
         }
 
         public String getSubject() {
