@@ -8,11 +8,11 @@ import java.util.Objects;
 @Entity
 public class Student {
     private @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     private String firstName;
     private String lastName;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Grade> grades;
 
     public Student() {
@@ -86,8 +86,15 @@ public class Student {
                 '}';
     }
 
-    private class Grade {
+    @Entity()
+
+    private static class Grade {
+        private @Id
+        @GeneratedValue
+        Long id;
         private String subject, year, grade;
+        @ManyToOne(cascade = CascadeType.ALL)
+        private Student student;
 
         public Grade() {
         }
