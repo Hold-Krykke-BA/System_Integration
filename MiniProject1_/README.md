@@ -87,7 +87,7 @@ Publication Year: 2021
 ```
 
 ### Installation
-Installing the SOAP project is easy. Here's how ...
+Pull the project, all dependencies are installed by maven during/before build. Run the applications in the console through the `SoapApplication` and `Soap2Application` main methods. 
 
 ## REST
 This part of the application provides an API and data store containing students and their grades.
