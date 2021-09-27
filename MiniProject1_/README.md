@@ -51,7 +51,7 @@ SOAP services:
     * https://www.ebi.ac.uk/europepmc/webservices/soap?wsdl
 
 ```
-Free and shitty SOAP School calculator
+SOAP School calculator
 Choose operator:
 1) Add
 2) Subtract
@@ -65,7 +65,7 @@ Result is: 16
 
 ---------------------------------------------------
 
-Free and shitty SOAP School Scientific Paper Lookup
+SOAP School Scientific Paper Lookup
 Choose search term:                     example input: her2
 
 SEARCH RESULT:
