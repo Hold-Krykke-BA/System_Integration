@@ -1,8 +1,8 @@
 # MiniProject 1 - Web Services and APIs
 
 ## Contributors
-- _Rúni Vedel Niclasen - cph-rn118_
-- _Camilla Jenny Valerius Staunstrup - cph-cs340_
+- _[Rúni Vedel Niclasen](https://github.com/Runi-VN) - [cph-rn118](cph-rn118@cphbusiness.dk)_
+- _[Camilla Jenny Valerius Staunstrup](https://github.com/Castau) - [cph-cs340](cph-cs340@cphbusiness.dk)_
 
 ## About
 
