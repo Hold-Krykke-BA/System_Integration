@@ -14,7 +14,29 @@ In short, the three services cover the following areas:
 Each subfolder contains its own part of the project.
 
 ## gRPC
-About the gRPC implementation...
+We have implemented gRCP the same way we did it in the first class assignment and have testet it with bloomRPC. It's a very simple and basic implementation, as there is a lot of framework/dependency issues when doing it this way. We suspect that an easier way to implement gRPC would be to create a protofile and complie it, but due to time constraints and the fact that we haven't been taught this way yet. 
+  
+**The gRPC call takes four parameters, all Strings, calculates the studypoints, saves the info in a .txt file and returns a response:**
+```json
+gRPC request
+{
+  "studentID": "as999",
+  "assignmentID": "a2",
+  "assignmentCompleted": "1",
+  "reviewCompleted": "0"
+}
+
+gRPC response
+{
+  "archivedInfo": "0 studypoints assigned to as999"
+}
+
+exsample on saved file:
+AssignmentID Assignment Review Studypoints
+    1           true       true      15
+    2           true       true      15
+    3           true       false     10
+```
 
 ### Installation
 Installing the gRPC project is easy. Here's how ...
