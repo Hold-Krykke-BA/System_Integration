@@ -31,7 +31,7 @@ gRPC response
   "archivedInfo": "0 studypoints assigned to as999"
 }
 
-exsample on saved file:
+example on saved file:
 AssignmentID Assignment Review Studypoints
     1           true     true      15
     2           true     true      15
