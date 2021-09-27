@@ -57,20 +57,16 @@ Choose operator:
 2) Subtract
 3) Multiply
 4) Integer division
-5) Exit
+5) Exit                                 example input: 3
 
-example input (for multiplication): 3
-Enter first number in calculation
-example input: 4
-Enter second number in calculation
-example input: 4
+Enter first number in calculation       example input: 4
+Enter second number in calculation      example input: 4
 Result is: 16
 
 ---------------------------------------------------
 
 Free and shitty SOAP School Scientific Paper Lookup
-Choose search term:
-example input: her2
+Choose search term:                     example input: her2
 
 SEARCH RESULT:
 
