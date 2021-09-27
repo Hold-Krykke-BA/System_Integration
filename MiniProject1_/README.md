@@ -41,9 +41,50 @@ AssignmentID Assignment Review Studypoints
 ### Installation
 Pull the project and solve any complaints Intellij might have about the dependencies/framework by cleaning in the maven lifecycle, generate source and update folders or restarting the project. Run the program from the main method in the buildserver and test it via BloomRPC. 
 
-
 ## SOAP
-About the SOAP implementation...
+The SOAP consumer uses to external SOAP services and contains two applications - a calculator service and a library service. Both of them are operated as console programs in the IDE, as they are just proof of concept. 
+
+SOAP services:
+* The calculator service
+    * http://www.dneonline.com/calculator.asmx?wsdl
+* The library service 
+    * https://www.ebi.ac.uk/europepmc/webservices/soap?wsdl
+
+```
+Free and shitty SOAP School calculator
+Choose operator:
+1) Add
+2) Subtract
+3) Multiply
+4) Integer division
+5) Exit
+
+example input (for multiplication): 3
+Enter first number in calculation
+example input: 4
+Enter second number in calculation
+example input: 4
+Result is: 16
+
+
+Free and shitty SOAP School Scientific Paper Lookup
+Choose search term:
+example input: her2
+
+SEARCH RESULT:
+
+DOI: 10.1080/19932820.2021.1955462
+Title: HER2 overexpression is a putative diagnostic and prognostic biomarker for late-stage colorectal cancer in North African patients.
+Journal Title: Libyan J Med
+Publication Year: 2021
+
+DOI: 10.1080/14756366.2021.1948841
+Title: Design, synthesis, HER2 inhibition and anticancer evaluation of new substituted 1,5-dihydro-4,1-benzoxazepines.
+Journal Title: J Enzyme Inhib Med Chem
+Publication Year: 2021
+
+(...)
+```
 
 ### Installation
 Installing the SOAP project is easy. Here's how ...
