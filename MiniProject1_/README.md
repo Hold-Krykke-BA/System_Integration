@@ -66,6 +66,7 @@ Enter second number in calculation
 example input: 4
 Result is: 16
 
+-----------------------------------------------------------------------------------------------------------------------------------------
 
 Free and shitty SOAP School Scientific Paper Lookup
 Choose search term:
