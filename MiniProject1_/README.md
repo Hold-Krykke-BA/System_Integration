@@ -33,9 +33,9 @@ gRPC response
 
 exsample on saved file:
 AssignmentID Assignment Review Studypoints
-    1           true       true      15
-    2           true       true      15
-    3           true       false     10
+    1           true     true      15
+    2           true     true      15
+    3           true     false     10
 ```
 
 ### Installation
