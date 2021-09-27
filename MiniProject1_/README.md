@@ -44,7 +44,7 @@ Pull the project and solve any complaints Intellij might have about the dependen
 ## SOAP
 The SOAP consumer uses to external SOAP services and contains two applications - a calculator service and a library service. Both of them are operated as console programs in the IDE, as they are just proof of concept. 
 
-SOAP services:
+**SOAP services:**
 * The calculator service
     * http://www.dneonline.com/calculator.asmx?wsdl
 * The library service 
