@@ -39,10 +39,8 @@ AssignmentID Assignment Review Studypoints
 ```
 
 ### Installation
-Installing the gRPC project is easy. Here's how ...
+Pull the project and solve any complaints Intellij might have about the dependencies/framework by cleaning in the maven lifecycle, generate source and update folders or restarting the project. Run the program from the main method in the buildserver and test it via BloomRPC. 
 
-### Data stores
-As part of the solution, the gRPC application writes to ...
 
 ## SOAP
 About the SOAP implementation...
