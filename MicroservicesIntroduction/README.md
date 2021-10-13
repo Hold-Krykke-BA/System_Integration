@@ -1,14 +1,10 @@
-# Introduction to Microservices (E4)
+# MiniProject 2
 
-## About
-Create 3 microservices for student information.
-- students + H2 db
-- assignments + H2 db
-- reports + mongodb
+## [Assignment Description](A4-MP-MS.pdf)
 
 ## Process
-Students & Assignments were created from P5-REST as described in the assignment.  
-Reports was created in a new Spring Boot app with Web & MongoDB dependencies.
+
+## Results
 
 
 ## Resources
