@@ -1,5 +1,6 @@
 package holdkrykke.clientserver;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @RestController
+@EnableAutoConfiguration
 public class StudentSearchController
 {
     private Client client = null;
