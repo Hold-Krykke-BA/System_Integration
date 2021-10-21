@@ -12,11 +12,11 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 //@EnableCircuitBreaker
 @EnableDiscoveryClient
 @SpringBootApplication
-public class ClientserverApplication {
+public class ClientServiceApplication {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(ClientserverApplication.class, args);
+        SpringApplication.run(ClientServiceApplication.class, args);
 
     }
 
