@@ -1,5 +1,6 @@
 package holdkrykke.clientserver;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +24,11 @@ public class StudentSearchController
 
     @ResponseBody
     @CrossOrigin(origins = "*") // allow request from any client
+    //@HystrixCommand(fallbackMethod = "fallback")
     @GetMapping("/students")
     public Collection<Student> myStudents()
     {
+        System.out.println("*****************TEST*******************");
         return client.readStudents()
                 .getContent()
                 .stream()
@@ -37,7 +40,7 @@ public class StudentSearchController
     {
         System.out.println("*****************TEST*******************");
         System.out.println(student.getName().contains("n"));
-        return  student.getName().contains("n");
+        return student.getName().contains("n");
     }
     private Collection<Student> fallback()
     {
