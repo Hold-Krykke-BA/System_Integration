@@ -3,10 +3,15 @@ package com.example.demo.model;
 // extends class ResourceSupport, which provides method add() for links to other resources
 // add HATEOAS dependency in maven for it
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+@Data
 @Entity
 public class Student {
     @Id

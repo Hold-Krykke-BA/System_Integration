@@ -12,6 +12,7 @@ import com.example.demo.model.Student;
 import com.example.demo.exceptions.StudentNotFoundException;
 import com.example.demo.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
+@RepositoryRestResource
+@ResponseBody
+@CrossOrigin(origins = "*")
 @RequestMapping("/students")
 public class StudentResource {
 
@@ -29,7 +33,10 @@ public class StudentResource {
 	@GetMapping("/")
 	public List<Student> retrieveAllStudents()
 	{
-		return repo.findAll();
+		System.out.println("Root endpoint hit");
+		var students = repo.findAll();
+		System.out.println(students);
+		return students;
 	}
 
 	// This is the only method, which returns hyperlinks, for now
