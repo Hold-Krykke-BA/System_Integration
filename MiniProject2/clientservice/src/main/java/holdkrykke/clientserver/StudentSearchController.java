@@ -35,6 +35,8 @@ public class StudentSearchController
 
     private boolean isMine(Student student)
     {
+        System.out.println("*****************TEST*******************");
+        System.out.println(student.getName().contains("n"));
         return  student.getName().contains("n");
     }
     private Collection<Student> fallback()
