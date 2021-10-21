@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @CrossOrigin
-@FeignClient("students")
-@RibbonClient(name="students-client-service", configuration = RibbonConfig.class)
-public interface Client
-{
+@FeignClient(name = "students", url = "/students")
+@RibbonClient(name = "students", configuration = RibbonConfig.class)
+public interface Client {
     @GetMapping("/students")
     CollectionModel<Student> readStudents();
 }

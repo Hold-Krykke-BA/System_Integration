@@ -9,18 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
 public class RibbonConfig {
+
     @Autowired
     IClientConfig config;
 
     @Bean
-    public IPing ribbonPing(IClientConfig config)
-    {
+    public IPing ribbonPing(IClientConfig config) {
         return new PingUrl();
     }
 
     @Bean
-    public IRule ribbonRule(IClientConfig config)
-    {
+    public IRule ribbonRule(IClientConfig config) {
         return new AvailabilityFilteringRule();
     }
 }
