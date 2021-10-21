@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @CrossOrigin
 @FeignClient("students")
+@RibbonClient(name="students-client-service", configuration = RibbonConfig.class)
 public interface Client
 {
     @GetMapping("/students")
