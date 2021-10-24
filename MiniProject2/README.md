@@ -11,6 +11,8 @@ Our main problem in the clientservice was getting the netflix dependencies and r
 
 This meant that the majority of our time in this assignment was spent solving strange dependency issues and errors and then not having time to implement the rest of the planned solution.
 
+It is worth mentioning that all of the services run as, or close to how, they should, but the interconnecting part of the Netflix system is missing due to the above reasons.
+
 ## Resources
 - https://spring.io/guides/gs/accessing-data-mongodb/
 - https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.nosql.mongodb
