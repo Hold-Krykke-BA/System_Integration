@@ -29,6 +29,13 @@ An application lender should provide the following to the banks through the clie
 
 The banks will then respond whether they are interested or not, and if so, their rates.
 
+### Considerations
+- We only want one bank application so as to not have repeat code. But we need to simulate differences between them or pass their thresholds in as arguments.
+- Client goes directly to bank or do we place a server in the middle?
+- Queue, Topic, both, something entirely else?
+- Both services need to consume and produce. The client needs to act on consumed content received in the end. How?
+- How long should the client wait for answer? From how many banks?
+
 ### The client
 There is one client that requests several banks.  
 The client can be found in [/Client](./Client).
