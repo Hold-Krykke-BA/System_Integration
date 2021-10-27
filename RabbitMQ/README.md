@@ -17,7 +17,7 @@ criteria
 ## Overview
 
 A simple overview of our understanding can be seen here:  
-![Mockup of conceptual understanding](/Concept.png)
+![Mockup of conceptual understanding](./Concept.png)
 
 We decided to only implement RabbitMQ due to time constraints and for not having seen Apache Camel integrated with RabbitMQ yet in class.
 
@@ -30,10 +30,13 @@ An application lender should provide the following to the banks through the clie
 The banks will then respond whether they are interested or not, and if so, their rates.
 
 ### The client
-There is one client that requests several banks. The client can be found in [/Client](./Client).
+There is one client that requests several banks.  
+The client can be found in [/Client](./Client).
 
 ### The banks (Consumers)
-There are several banks that respond to the client. The bank can be found in [/Bank](./Bank).  
+There are several banks that respond to the client.  
+The bank can be found in [/Bank](./Bank).  
+
 The banks should be loaded several times for simulating several banks and responses. 
 
 ## Resources
