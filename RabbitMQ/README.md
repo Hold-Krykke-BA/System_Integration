@@ -17,7 +17,7 @@ criteria
 ## Overview
 
 A simple overview of our initial understanding can be seen here:  
-![Mockup of conceptual understanding](./Concept2.png)
+![Mockup of conceptual understanding](./Concept3.png)
 
 We decided to only implement RabbitMQ due to time constraints and for not having seen Apache Camel integrated with RabbitMQ yet in class.
 
@@ -38,7 +38,7 @@ The banks will then respond whether they are interested or not, and if so, their
 
 This spurred different implementations, mainly due to there being several strategies.
 - One implementation that follows a RPC strategy as proposed in the `tutorial-six-java` seen in Resources below. It can be found on the [rabbitmq-six](https://github.com/Hold-Krykke-BA/System_Integration/tree/rabbitmq-six/RabbitMQ) branch. It has not been tested extensively. This was chosen because we wanted the client to queue the server, the server to respond, and the client to take action on the response(s). 
-- One implementation that follows closer to our teachings which follows the `tutorial-four-java` seen in resources below.
+- One implementation that follows closer to our teachings which follows the `tutorial-five-java` seen in resources below.
 
 ### The client
 There is one client that requests several banks.  
@@ -55,6 +55,6 @@ The banks should be loaded several times for simulating several banks and respon
   - https://www.enterpriseintegrationpatterns.com/patterns/messaging/RequestReply.html
   - https://github.com/rabbitmq/rabbitmq-tutorials/blob/master/java/RPCClient.java
   - https://github.com/rabbitmq/rabbitmq-tutorials/blob/master/java/RPCServer.java
-- https://www.rabbitmq.com/tutorials/tutorial-four-java.html
+- https://www.rabbitmq.com/tutorials/tutorial-five-java.html
 - https://github.com/datsoftlyngby/soft2021fall-SI/tree/main/code/P8-RabbitMQ
 - https://datsoftlyngby.github.io/soft2021fall/SI/week-43/#7-asynchronous-communication-messaging-and-mom
