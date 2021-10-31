@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.util.SerializationUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
 @SpringBootApplication
@@ -36,21 +37,11 @@ public class ClientApplication {
             int years = getYears(args);
             int creditScore = getCreditScore(args);
 
-            //Convert to obj for transfer
-            var message = new ClientDTO(amount, years, creditScore);
+            var message = amount + ", " + years + ", " + creditScore;
             System.out.println("Setup: " + message);
 
-            //byte[] data = SerializationUtils.serialize(message);
-
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutput out = new ObjectOutputStream(bos);
-            out.writeObject(message);
-            byte data[] = bos.toByteArray();
-            out.close();
-            bos.close();
-
             //Publish message to exchange
-            channel.basicPublish(EXCHANGE_NAME, routingKey, null, data);
+            channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes(StandardCharsets.UTF_8));
             System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
         }
 

@@ -49,17 +49,8 @@ public class BankApplication {
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            //String message = new String(delivery.getBody(), "UTF-8");
-            //ClientDTO response = (ClientDTO) SerializationUtils.deserialize(delivery.getBody());
-            ClientDTO result = null;
-            ByteArrayInputStream bis = new ByteArrayInputStream(delivery.getBody());
-            ObjectInput in = new ObjectInputStream(bis);
-            try {
-                result = (ClientDTO) in.readObject();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            System.out.println(" [x] Received '" + delivery.getEnvelope().getRoutingKey() + "':'" + result + "'");
+            String message = new String(delivery.getBody(), "UTF-8");
+            System.out.println(" [x] Received '" + delivery.getEnvelope().getRoutingKey() + "':'" + message + "'");
         };
         channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
         });
