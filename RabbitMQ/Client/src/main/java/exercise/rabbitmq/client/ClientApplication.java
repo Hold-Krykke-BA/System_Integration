@@ -19,7 +19,7 @@ import java.util.concurrent.TimeoutException;
 @SpringBootApplication
 public class ClientApplication {
 
-    private final static String QUEUENAME = "RPC_QUEUE"; //TODO
+    private final static String QUEUENAME = "RPC_QUEUE";
     private final static String HOST = "localhost";
     private final static int PORT = -1;
 
@@ -29,25 +29,19 @@ public class ClientApplication {
         //This needs to act as a producer...and a consumer, as it needs to chose from the returned answers
 
         //Set up parameters
-        String topic = args[0]; //"house.car.all" //TODO
-        Long amount = Long.parseLong(args[1]); //TODO
-        int years = Integer.parseInt(args[2]); //TODO
-        int creditScore = Integer.parseInt(args[3]); //TODO
+        String topic = args[0];
+        Long amount = Long.parseLong(args[1]);
+        int years = Integer.parseInt(args[2]);
+        int creditScore = Integer.parseInt(args[3]);
 
         //Convert to object
         ClientDTO message = new ClientDTO(topic, amount, years, creditScore);
-
-        //Connect to broker, channel.
-        //Connect to queue (single search?) or topic (multisearch?) -- probably only one, probably topic?
-        //Await response (How long? How many clients to expect?)
-        //Chose from responders
 
         clientApplication(message);
     }
 
 
     private static void clientApplication(ClientDTO message) {
-        //Copy paste in-class consumer for now
 
         // 1. Create factory
         ConnectionFactory factory = new ConnectionFactory();
@@ -83,16 +77,15 @@ public class ClientApplication {
             }, consumerTag -> {
             });
 
-            System.out.println("Status update outside");
+            System.out.println("Status update");
 
             List<String> results = new ArrayList<>();
-
-            while (results.size() < 3) { //todo or time has passed
+            long startTime = System.currentTimeMillis();
+            while (results.size() < 3 || (System.currentTimeMillis() - startTime) < 10000) {
                 var result = response.take();
                 results.add(result);
                 System.out.println(result);
             }
-
 
             chooseLoanOffer(results);
 
