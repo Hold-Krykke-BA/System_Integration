@@ -17,7 +17,7 @@ criteria
 ## Overview
 
 A simple overview of our initial understanding can be seen here:  
-![Mockup of conceptual understanding](./Concept.png)
+![Mockup of conceptual understanding](./Concept2.png)
 
 We decided to only implement RabbitMQ due to time constraints and for not having seen Apache Camel integrated with RabbitMQ yet in class.
 
