@@ -1,66 +1,130 @@
 package exercise.rabbitmq.client;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.util.SerializationUtils;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.concurrent.TimeoutException;
 
 @SpringBootApplication
 public class ClientApplication {
 
-    private final static String QUEUENAME = "TODO"; //TODO
+    private static final String EXCHANGE_NAME = "topic_banks";
     private final static String HOST = "localhost";
-    private final static int PORT = -1;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         SpringApplication.run(ClientApplication.class, args);
 
-        //This needs to act as a producer...and a consumer, as it needs to chose from the returned answers
+        //Set up connection
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(HOST);
 
-        //Set up parameters
-        String topic = "bank.todo"; //TODO
-        Long amount = -1L; //TODO
-        int years = -1; //TODO
-        int creditScore = -1; //TODO
+        //Connect
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
 
-        //Connect to broker, channel.
-        //Connect to queue (single search?) or topic (multisearch?) -- probably only one, probably topic?
-        //Await response (How long? How many clients to expect?)
-        //Chose from responders
+            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
 
-        clientApplication(topic, amount, years, creditScore);
-    }
+            //Get params
+            String routingKey = getRouting(args);
+            Long amount = getAmount(args);
+            int years = getYears(args);
+            int creditScore = getCreditScore(args);
 
-    private static void clientApplication(String topic, Long amount, int years, int creditScore) {
-        //Copy paste in-class consumer for now
+            //Convert to obj for transfer
+            var message = new ClientDTO(amount, years, creditScore);
+            System.out.println("Setup: " + message);
 
-        // 1. Create factory
-        ConnectionFactory cf = new ConnectionFactory();
-        cf.setHost(HOST); //port defaults to 5672 (see getPort())
+            //byte[] data = SerializationUtils.serialize(message);
 
-        try {
-            // 2. Create connection from factory instance
-            Connection con = cf.newConnection();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutput out = new ObjectOutputStream(bos);
+            out.writeObject(message);
+            byte data[] = bos.toByteArray();
+            out.close();
+            bos.close();
 
-            // 3. Create channel from connection instance
-            Channel channel = con.createChannel();
-
-            // 4. Create queue from channel instance
-            channel.queueDeclare(QUEUENAME, false, false, false, null); //TODO (download documentation from maven too!)
-
-            // 5. Send message
-            //TODO need to figure out how we publish properly. See Resources in README.
-            //channel.basicPublish("", QUEUENAME, null, message);
-
-            //6. Await response? //TODO
-        } catch (IOException | TimeoutException e) {
-            e.printStackTrace();
+            //Publish message to exchange
+            channel.basicPublish(EXCHANGE_NAME, routingKey, null, data);
+            System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
         }
+
     }
 
+    private static String getRouting(String[] args) {
+        if (args.length < 1)
+            return "banks.house";
+        return "banks" + args[0]; //banks.car or banks.house
+    }
 
+    private static Long getAmount(String[] args) {
+        if (args.length < 2)
+            return 100000L;
+        return Long.parseLong(args[1]);
+    }
+
+    private static int getYears(String[] args) {
+        if (args.length < 3)
+            return 10;
+        return Integer.parseInt(args[2]);
+    }
+
+    private static int getCreditScore(String[] args) {
+        if (args.length < 4)
+            return 600;
+        return Integer.parseInt(args[3]);
+    }
+
+}
+
+class ClientDTO implements Serializable {
+    private Long amount;
+    private int years, creditScore;
+
+    public ClientDTO() {
+    }
+
+    public ClientDTO(Long amount, int years, int creditScore) {
+        this.amount = amount;
+        this.years = years;
+        this.creditScore = creditScore;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
+
+    public int getYears() {
+        return years;
+    }
+
+    public void setYears(int years) {
+        this.years = years;
+    }
+
+    public int getCreditScore() {
+        return creditScore;
+    }
+
+    public void setCreditScore(int creditScore) {
+        this.creditScore = creditScore;
+    }
+
+    @Override
+    public String toString() {
+        return "ClientDTO{" +
+                "amount=" + amount +
+                ", years=" + years +
+                ", creditScore=" + creditScore +
+                '}';
+    }
 }
