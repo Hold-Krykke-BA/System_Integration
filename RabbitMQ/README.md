@@ -13,6 +13,11 @@ The customer application:
 - compares the quotes and selects one, based on its own financial status and
 criteria
 
+## Setup
+1. Run RabbitMQ on your workstation `docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management`
+2. Run any amount of clients (1 is enough). Pass in args if you want.
+3. Run any amount of banks (1-3 suggested). Pass in args if you want diverse answers.
+
 
 ## Overview
 
@@ -38,7 +43,9 @@ The banks will then respond whether they are interested or not, and if so, their
 
 This spurred different implementations, mainly due to there being several strategies.
 - One implementation that follows a RPC strategy as proposed in the `tutorial-six-java` seen in Resources below. It can be found on the [rabbitmq-six](https://github.com/Hold-Krykke-BA/System_Integration/tree/rabbitmq-six/RabbitMQ) branch. It has not been tested extensively. This was chosen because we wanted the client to queue the server, the server to respond, and the client to take action on the response(s). 
-- One implementation that follows closer to our teachings which follows the `tutorial-five-java` seen in resources below.
+- One implementation that follows closer to our teachings which follows the `tutorial-five-java` and six seen in resources below.
+
+We wanted to implement it with Spring support as well (using `@RabbitTemplate` and `@Service` + easier data conversion) but that must come for a later application.
 
 ### The client
 There is one client that requests several banks.  
