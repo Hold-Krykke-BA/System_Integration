@@ -6,18 +6,23 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.util.SerializationUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 @SpringBootApplication
 public class BankApplication {
 
     private static final String EXCHANGE_NAME = "topic_banks";
     private final static String HOST = "localhost";
+
+    static long maxAmount = 1_000_000L;
+    static long minAmount = 50_000L;
+    static int maxYears = 30;
+    static int minYears = 4;
+    static int acceptableCreditScore = 600;
+    static String bankId = UUID.randomUUID().toString();
 
 
     public static void main(String[] args) throws Exception {
@@ -32,76 +37,145 @@ public class BankApplication {
         String queueName = channel.queueDeclare().getQueue();
 
         if (args.length < 1) {
-            System.err.println("Usage: [binding_key].\nExample: banks.house || bank.* || #");
-            //System.exit(1); todo reinstate
+            System.err.println("Usage: [binding_key]. Example: banks.house || banks.* || #");
+            System.err.println("[min_amount] [max_amount] [min_years] [max_years] [acceptable_credit_score]");
+            //System.exit(1);
         }
 
-        String[] keys = args;
-        if (keys.length == 0) {
-            keys = new String[]{"#"};
+        //Set up parameters
+        String keys = "#"; //Default, get all messages
+        if (args.length > 0) {
+            keys = args[0];
         }
 
-        for (String bindingKey : keys) {
-            channel.queueBind(queueName, EXCHANGE_NAME, bindingKey);
-            System.out.println("Bound queue: " + queueName + "\t" + EXCHANGE_NAME + "\t" + bindingKey);
+        if (args.length > 1) {
+            minAmount = Long.parseLong(args[1]);
         }
 
+        if (args.length > 2) {
+            maxAmount = Long.parseLong(args[2]);
+        }
+
+        if (args.length > 3) {
+            minYears = Integer.parseInt(args[3]);
+        }
+
+        if (args.length > 4) {
+            maxYears = Integer.parseInt(args[4]);
+        }
+
+        if (args.length > 5) {
+            acceptableCreditScore = Integer.parseInt(args[5]);
+        }
+
+        channel.queueBind(queueName, EXCHANGE_NAME, keys);
+        System.out.println("Bound queue: " + queueName + "\t" + EXCHANGE_NAME + "\t" + keys);
+
+        System.out.println("Setup:\n" + minAmount + "\n" + maxAmount + "\n" + minYears + "\n" + maxYears + "\n" + acceptableCreditScore);
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
+
+        //Add tutorial6 to return call in bank & client
+        //Handle return in client
+
+
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(), "UTF-8");
+            String message = (new String(delivery.getBody(), "UTF-8"));
             System.out.println(" [x] Received '" + delivery.getEnvelope().getRoutingKey() + "':'" + message + "'");
+            //Convert each unit back from String
+            var data = message.toString().split(",");
+            Long amount = Long.parseLong(data[0]);
+            int years = Integer.parseInt(data[1]);
+            int creditScore = Integer.parseInt(data[2]);
+
+            String result = loanApplication(amount, years, creditScore);
+            System.out.println(result);
         };
+
         channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
         });
+
+
+
     }
 
-    class ClientDTO implements Serializable {
-        private Long amount;
-        private int years, creditScore;
+    private static String loanApplication(Long amount, int years, int creditScore) {
+        System.out.println("Loan application received:\n" + amount + "\n" + years + "\n" + creditScore);
 
-        public ClientDTO() {
+        String response = "Bank ID: #" + bankId + ". ";
+        boolean amountOK = false;
+        boolean yearsOK = false;
+
+        if (creditScore < acceptableCreditScore) {
+            return response += "Loan not accepted."; //No way this loan goes through
+        }
+        response += "Credit score OK. ";
+
+        if (amount >= minAmount && amount <= maxAmount) {
+            response += "Amount OK. ";
+            amountOK = true;
+        }
+        if (years >= minYears && years <= maxYears) {
+            response += "Years OK. ";
+            yearsOK = true;
         }
 
-        public ClientDTO(Long amount, int years, int creditScore) {
-            this.amount = amount;
-            this.years = years;
-            this.creditScore = creditScore;
+        if (amountOK && yearsOK) {
+            response += "Everything OK. Loan possible.";
+        } else {
+            response += "Not everything is OK. Loan may not be possible";
         }
-
-        public Long getAmount() {
-            return amount;
-        }
-
-        public void setAmount(Long amount) {
-            this.amount = amount;
-        }
-
-        public int getYears() {
-            return years;
-        }
-
-        public void setYears(int years) {
-            this.years = years;
-        }
-
-        public int getCreditScore() {
-            return creditScore;
-        }
-
-        public void setCreditScore(int creditScore) {
-            this.creditScore = creditScore;
-        }
-
-        @Override
-        public String toString() {
-            return "ClientDTO{" +
-                    "amount=" + amount +
-                    ", years=" + years +
-                    ", creditScore=" + creditScore +
-                    '}';
-        }
+        return response;
     }
+}
+
+
+class ClientDTO implements Serializable {
+    private Long amount;
+    private int years, creditScore;
+
+    public ClientDTO() {
+    }
+
+    public ClientDTO(Long amount, int years, int creditScore) {
+        this.amount = amount;
+        this.years = years;
+        this.creditScore = creditScore;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
+
+    public int getYears() {
+        return years;
+    }
+
+    public void setYears(int years) {
+        this.years = years;
+    }
+
+    public int getCreditScore() {
+        return creditScore;
+    }
+
+    public void setCreditScore(int creditScore) {
+        this.creditScore = creditScore;
+    }
+
+    @Override
+    public String toString() {
+        return "ClientDTO{" +
+                "amount=" + amount +
+                ", years=" + years +
+                ", creditScore=" + creditScore +
+                '}';
+    }
+
 }
 
 

@@ -37,7 +37,8 @@ public class ClientApplication {
             int years = getYears(args);
             int creditScore = getCreditScore(args);
 
-            var message = amount + ", " + years + ", " + creditScore;
+            //Convert to "csv" format
+            var message = amount + "," + years + "," + creditScore;
             System.out.println("Setup: " + message);
 
             //Publish message to exchange
