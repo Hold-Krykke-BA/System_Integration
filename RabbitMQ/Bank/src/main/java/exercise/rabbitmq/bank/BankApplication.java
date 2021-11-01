@@ -7,9 +7,7 @@ import com.rabbitmq.client.DeliverCallback;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.Serializable;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 @SpringBootApplication
 public class BankApplication {
@@ -95,8 +93,6 @@ public class BankApplication {
         channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
         });
 
-
-
     }
 
     private static String loanApplication(Long amount, int years, int creditScore) {
@@ -128,54 +124,3 @@ public class BankApplication {
         return response;
     }
 }
-
-
-class ClientDTO implements Serializable {
-    private Long amount;
-    private int years, creditScore;
-
-    public ClientDTO() {
-    }
-
-    public ClientDTO(Long amount, int years, int creditScore) {
-        this.amount = amount;
-        this.years = years;
-        this.creditScore = creditScore;
-    }
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
-
-    public int getYears() {
-        return years;
-    }
-
-    public void setYears(int years) {
-        this.years = years;
-    }
-
-    public int getCreditScore() {
-        return creditScore;
-    }
-
-    public void setCreditScore(int creditScore) {
-        this.creditScore = creditScore;
-    }
-
-    @Override
-    public String toString() {
-        return "ClientDTO{" +
-                "amount=" + amount +
-                ", years=" + years +
-                ", creditScore=" + creditScore +
-                '}';
-    }
-
-}
-
-

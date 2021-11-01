@@ -1,16 +1,12 @@
 package exercise.rabbitmq.client;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.util.SerializationUtils;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeoutException;
 
 @SpringBootApplication
 public class ClientApplication {
@@ -72,51 +68,4 @@ public class ClientApplication {
         return Integer.parseInt(args[3]);
     }
 
-}
-
-class ClientDTO implements Serializable {
-    private Long amount;
-    private int years, creditScore;
-
-    public ClientDTO() {
-    }
-
-    public ClientDTO(Long amount, int years, int creditScore) {
-        this.amount = amount;
-        this.years = years;
-        this.creditScore = creditScore;
-    }
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
-
-    public int getYears() {
-        return years;
-    }
-
-    public void setYears(int years) {
-        this.years = years;
-    }
-
-    public int getCreditScore() {
-        return creditScore;
-    }
-
-    public void setCreditScore(int creditScore) {
-        this.creditScore = creditScore;
-    }
-
-    @Override
-    public String toString() {
-        return "ClientDTO{" +
-                "amount=" + amount +
-                ", years=" + years +
-                ", creditScore=" + creditScore +
-                '}';
-    }
 }
