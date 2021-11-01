@@ -40,12 +40,14 @@ The banks will then respond whether they are interested or not, and if so, their
 - Queue, Topic, both, something entirely else?
 - Both services need to consume and produce. The client needs to act on consumed content received in the end. How?
 - How long should the client wait for answer? From how many banks?
+- Data conversion? Only byte[] allowed.
 
 This spurred different implementations, mainly due to there being several strategies.
 - One implementation that follows a RPC strategy as proposed in the `tutorial-six-java` seen in Resources below. It can be found on the [rabbitmq-six](https://github.com/Hold-Krykke-BA/System_Integration/tree/rabbitmq-six/RabbitMQ) branch. It has not been tested extensively. This was chosen because we wanted the client to queue the server, the server to respond, and the client to take action on the response(s). 
 - One implementation that follows closer to our teachings which follows the `tutorial-five-java` and six seen in resources below.
 
-We wanted to implement it with Spring support as well (using `@RabbitTemplate` and `@Service` + easier data conversion) but that must come for a later application.
+We wanted to implement it with Spring support as well (using `@RabbitTemplate` and `@Service` + easier data conversion) but that must come for a later application.  
+We tried to convert data using SerializationUtils and some frameworks but ended up doing it using simple comma-separated string values.
 
 ### The client
 There is one client that requests several banks.  
