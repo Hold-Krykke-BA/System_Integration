@@ -1,0 +1,15 @@
+#Taken from Producer3: https://github.com/datsoftlyngby/soft2021fall-SI/blob/main/code/p9-Kafka/P9-Kafka-Producer-3/src/main/resources/application.yml
+#This may fail as we don't have bootstrap-servers setup!
+
+server:
+  port: 9004
+spring:
+  kafka:
+    producer:
+      topic: another-test-topic #referenced in TopicConfiguration
+      auto-offset-reset: earliest
+      partitioned: true
+      partition-count: 3
+      bootstrap-servers: localhost:9092, localhost:9094
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
