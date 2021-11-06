@@ -28,6 +28,6 @@ public class ProducerController {
     public String sendMyObject(@RequestBody Customer customer)
     {
         service.sendObject(customer);
-        return "Customer published: " + customer.getId() + ":" + customer.getName() ;
+        return "Customer published: " + customer.getId() + " : " + customer.getName() + " " + topic;
     }
 }
