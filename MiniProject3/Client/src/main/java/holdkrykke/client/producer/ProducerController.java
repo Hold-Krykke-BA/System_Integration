@@ -1,6 +1,7 @@
 package holdkrykke.client.producer;
 
 import holdkrykke.client.model.Customer;
+import holdkrykke.client.model.LoanApplicant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,13 @@ public class ProducerController {
     @Autowired
     private ProducerService service;
 
-    @PostMapping(value = "/customer")
-    public String sendMyObject(@RequestBody Customer customer)
-    {
-        service.sendObject(customer);
-        return "Customer published: " + customer.getId() + " : " + customer.getName() + " " + topic;
+//    @PostMapping(value = "/customer")
+    @PostMapping(value = "/loan")
+    public String sendMyObject(@RequestBody LoanApplicant loanapplicant) {
+        service.sendObject(loanapplicant);
+        return "LoanApplicant published: " + loanapplicant.getSsn() + " : " + loanapplicant.getCreditScore() + " : " + loanapplicant.getLoanAmount() + " : " +
+                loanapplicant.getCurrentDebt() + " : " +loanapplicant.getYearlySalary() + " : " +loanapplicant.getLoanType() + " " + topic;
+//        service.sendObject(customer);
+//        return "Customer published: " + customer.getId() + " : " + customer.getName() + " " + topic;
     }
 }
