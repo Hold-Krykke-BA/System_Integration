@@ -6,7 +6,7 @@ server:
 spring:
   kafka:
     producer:
-      topic: another-test-topic #referenced in TopicConfiguration
+      topic: loan-application #another-test-topic #referenced in TopicConfiguration
       auto-offset-reset: earliest
       partitioned: true
       partition-count: 3
