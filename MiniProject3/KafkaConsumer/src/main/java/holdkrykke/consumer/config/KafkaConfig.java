@@ -4,6 +4,7 @@ import holdkrykke.consumer.consumer.LoanApplicant;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,6 +70,7 @@ public class KafkaConfig {
     @Bean
     public ReplyingKafkaTemplate<String, LoanApplicant, LoanApplicant> replyKafkaTemplate(ProducerFactory<String, LoanApplicant> pf, KafkaMessageListenerContainer<String, LoanApplicant> container) {
         return new ReplyingKafkaTemplate<>(pf, container);
+
     }
 
     @Bean
@@ -78,15 +80,15 @@ public class KafkaConfig {
     }
 
     @Bean
-    @ConditionalOnMissingBean(type = "ConsumerFactory")
-    public ConsumerFactory<byte[], LoanApplicant> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new ByteArrayDeserializer(), new JsonDeserializer<>(LoanApplicant.class, false));
+    @ConditionalOnMissingBean(ConsumerFactory.class)
+    public ConsumerFactory<String, LoanApplicant> consumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(), new JsonDeserializer<>(LoanApplicant.class, false));
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "kafkaListenerContainerFactory")
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<byte[], LoanApplicant>> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<byte[], LoanApplicant> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, LoanApplicant>> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, LoanApplicant> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setReplyTemplate(kafkaTemplate());
         return factory;

@@ -8,6 +8,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
+import java.util.HashMap;
 
 //Taken from Consumer1: https://github.com/datsoftlyngby/soft2021fall-SI/blob/main/code/p9-Kafka/P9-Kafka-Consumer-1/src/main/java/dk/dd/kafkaconsumer1/consumer/ConsumerService.java
 @Service
@@ -26,15 +27,16 @@ public class ConsumerService
     //@KafkaListener(topics = "${kafka.topic.request-topic}")
     //@KafkaListener(topics = "loan-application", groupId = "my-group")
     @SendTo
-    public byte[] listen(LoanApplicant request) throws InterruptedException {
+    public LoanApplicant listen(LoanApplicant request) throws InterruptedException {
         System.out.println(request);
         request.setApplicationID("HAT-HATTER-HAT");
         //request.setAdditionalProperty("sum", sum);
 
-
-        JsonSerializer<LoanApplicant> json = new JsonSerializer<LoanApplicant>();
-        var response = json.serialize("requestreply-topic",request);
-        System.out.println(response.toString());
-        return response; // ???????
+//
+//        JsonSerializer<LoanApplicant> json = new JsonSerializer<LoanApplicant>();
+//        json.configure(new HashMap<>(), false);
+//        var response = json.serialize("requestreply-topic",request);
+//        System.out.println(response.toString());
+        return request; // ???????
     }
 }

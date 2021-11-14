@@ -51,6 +51,8 @@ public class LoanController {
 
         // get consumer record
         ConsumerRecord<String, LoanApplicant> consumerRecord = sendAndReceive.get();
+
+        System.out.println(record.value());
         // return consumer value
         return consumerRecord.value();
     }
