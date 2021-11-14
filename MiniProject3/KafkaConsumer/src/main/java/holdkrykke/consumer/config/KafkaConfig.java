@@ -1,15 +1,15 @@
-package holdkrykke.client.requestReply.config;
+package holdkrykke.consumer.config;
 
-import holdkrykke.client.model.LoanApplicant;
+import holdkrykke.consumer.consumer.LoanApplicant;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
@@ -22,7 +22,6 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
-
 
 @Configuration
 public class KafkaConfig {
@@ -38,6 +37,7 @@ public class KafkaConfig {
 
     @Bean
     public Map<String, Object> producerConfigs() {
+        System.out.println("IN HERE NOW");
         Map<String, Object> props = new HashMap<>();
         // list of host:port pairs used for establishing the initial connections to the Kakfa cluster
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -51,7 +51,7 @@ public class KafkaConfig {
     @Bean
     public Map<String, Object> consumerConfigs() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,bootstrapServers);
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "loanapptest3"); // change here to break forever loop
         return props;
     }
@@ -67,9 +67,8 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ReplyingKafkaTemplate<String, LoanApplicant, LoanApplicant> replyKafkaTemplate(ProducerFactory<String, LoanApplicant> pf, KafkaMessageListenerContainer<String, LoanApplicant> container){
+    public ReplyingKafkaTemplate<String, LoanApplicant, LoanApplicant> replyKafkaTemplate(ProducerFactory<String, LoanApplicant> pf, KafkaMessageListenerContainer<String, LoanApplicant> container) {
         return new ReplyingKafkaTemplate<>(pf, container);
-
     }
 
     @Bean
@@ -79,18 +78,17 @@ public class KafkaConfig {
     }
 
     @Bean
-    @ConditionalOnMissingBean(ConsumerFactory.class)
-    public ConsumerFactory<String, LoanApplicant> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs(),new StringDeserializer(),new JsonDeserializer<>(LoanApplicant.class, false));
+    @ConditionalOnMissingBean(type = "ConsumerFactory")
+    public ConsumerFactory<byte[], LoanApplicant> consumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new ByteArrayDeserializer(), new JsonDeserializer<>(LoanApplicant.class, false));
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "kafkaListenerContainerFactory")
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, LoanApplicant>> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, LoanApplicant> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<byte[], LoanApplicant>> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<byte[], LoanApplicant> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setReplyTemplate(kafkaTemplate());
         return factory;
     }
-
 }

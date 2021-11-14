@@ -26,12 +26,15 @@ public class ConsumerService
     //@KafkaListener(topics = "${kafka.topic.request-topic}")
     //@KafkaListener(topics = "loan-application", groupId = "my-group")
     @SendTo
-    public String listen(LoanApplicant request) throws InterruptedException {
+    public byte[] listen(LoanApplicant request) throws InterruptedException {
         System.out.println(request);
         request.setApplicationID("HAT-HATTER-HAT");
         //request.setAdditionalProperty("sum", sum);
 
+
         JsonSerializer<LoanApplicant> json = new JsonSerializer<LoanApplicant>();
-        return json.noTypeInfo(request); // ???????
+        var response = json.serialize("requestreply-topic",request);
+        System.out.println(response.toString());
+        return response; // ???????
     }
 }
