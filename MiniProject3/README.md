@@ -10,7 +10,7 @@
 Our initial plan with this assignment was to create an application that would communicate with various banks and forward them information about loan applicants. The banks would then respond to the application with their offers to the loan applicant. The Loan applicant would be presented with a list of all the offers and would then choose one and communicate back to that bank. 
 
 The communication between the application and the banks would be through Apache Kafka. The application would have both producer and consumer responsibilities, whereas the banks would be replying consumers. 
-The replies from the banks would be sorted using Apache Camel and the loan applicant would respond to the chosen bank through a REST endpoint using the offers unique ID. In the following is a drawing of our plan:
+The replies from the banks would be sorted using Apache Camel and the loan applicant would respond to the chosen bank through a REST endpoint using the offers unique ID. In the following is a drawing of our plan:  
 ![image](https://user-images.githubusercontent.com/35559774/141858811-906a0d8b-7ed9-4f07-9860-f65057f799a4.png)
 
 
