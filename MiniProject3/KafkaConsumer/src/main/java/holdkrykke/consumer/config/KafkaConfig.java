@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
@@ -25,6 +26,16 @@ import java.util.Map;
 
 @Configuration
 public class KafkaConfig {
+    @Bean("loans")
+    @Scope("singleton")
+    HashMap<String, LoanApplicant> getLoanContainer() {
+        var loanContainer = new HashMap<String, LoanApplicant>();
+        System.out.println("Loancontainer contents:");
+        loanContainer.entrySet().forEach(entry -> {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        });
+        return loanContainer;
+    }
 
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
@@ -37,7 +48,6 @@ public class KafkaConfig {
 
     @Bean
     public Map<String, Object> producerConfigs() {
-        System.out.println("IN HERE NOW");
         Map<String, Object> props = new HashMap<>();
         // list of host:port pairs used for establishing the initial connections to the Kakfa cluster
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,

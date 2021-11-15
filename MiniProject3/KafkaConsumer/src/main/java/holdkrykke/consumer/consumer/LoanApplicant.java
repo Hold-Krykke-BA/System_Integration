@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
     @JsonIgnoreProperties(ignoreUnknown = true)
 public class LoanApplicant {
     private long ssn, creditScore, loanAmount, currentDebt, yearlySalary, durationMonths;
-    private String loanType, applicationID, firstName, lastName;
+    private String loanType, applicationID, firstName, lastName, loanMessage;
     private boolean bankAccept;
     private double ARP, monthlyPayment;
 }
