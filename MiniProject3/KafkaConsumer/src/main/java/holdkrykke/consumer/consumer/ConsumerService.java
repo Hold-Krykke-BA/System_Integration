@@ -1,16 +1,10 @@
 package holdkrykke.consumer.consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
@@ -18,18 +12,32 @@ import java.util.UUID;
 @Service
 public class ConsumerService {
     private final Random rand = new Random();
-    private static final Logger logger = LoggerFactory.getLogger(ConsumerService.class);
 
-    @KafkaListener(topics = "request-topic", groupId = "requestreplygorup")
+    @KafkaListener(topics = "request-topic", groupId = "requestreplygroup")
     @SendTo
     public LoanApplicant listen(LoanApplicant request) throws InterruptedException {
-        System.out.println(request);
+        System.out.println("Consumer1\n" +request);
 
         request.setBankAccept(acceptedOrDeclined(request));
         request.setARP(calculateARP(request));
         request.setDurationMonths(calculateDurationMonths(request));
         request.setMonthlyPayment(calculateMonthlyPayment(request));
         request.setApplicationID(generateApplicationID());
+        System.out.println("Consumer1 response\n" +request);
+        return request;
+    }
+
+    @KafkaListener(topics = "request-topic", groupId = "requestreplygroup2")
+    @SendTo
+    public LoanApplicant listen2(LoanApplicant request) throws InterruptedException {
+        System.out.println("Consumer2\n" +request);
+
+        request.setBankAccept(acceptedOrDeclined(request));
+        request.setARP(calculateARP(request));
+        request.setDurationMonths(calculateDurationMonths(request));
+        request.setMonthlyPayment(calculateMonthlyPayment(request));
+        request.setApplicationID(generateApplicationID());
+        System.out.println("Consumer2 response\n" +request);
         return request;
     }
 

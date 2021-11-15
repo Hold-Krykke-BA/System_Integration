@@ -1,8 +1,9 @@
 package holdkrykke.client.requestReply.controller;
 
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
-
 import holdkrykke.client.model.LoanApplicant;
 import holdkrykke.client.model.LoanApplicantOutDTO;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -42,13 +43,19 @@ public class LoanController {
         // set reply topic in header
         record.headers().add(new RecordHeader(KafkaHeaders.REPLY_TOPIC, requestReplyTopic.getBytes()));
         // post in kafka topic
-        RequestReplyFuture<String, LoanApplicant, LoanApplicant> sendAndReceive = kafkaTemplate.sendAndReceive(record);
+        RequestReplyFuture<String, LoanApplicant, LoanApplicant> sendAndReceive = kafkaTemplate.sendAndReceive(record, Duration.ofSeconds(1));
         // confirm if producer produced successfully
         SendResult<String, LoanApplicant> sendResult = sendAndReceive.getSendFuture().get();
         //print all headers
         sendResult.getProducerRecord().headers().forEach(header -> System.out.println(header.key() + ":" + Arrays.toString(header.value())));
         // get consumer record
         ConsumerRecord<String, LoanApplicant> consumerRecord = sendAndReceive.get();
+
+        ArrayList<LoanApplicantOutDTO> results = new ArrayList<>();
+        results.add(new LoanApplicantOutDTO(consumerRecord.value()));
+        for (LoanApplicantOutDTO dto : results){
+            System.out.println(dto.toString());
+        }
         return new LoanApplicantOutDTO(consumerRecord.value());
     }
 
