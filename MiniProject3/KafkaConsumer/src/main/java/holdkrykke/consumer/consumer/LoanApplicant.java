@@ -5,13 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
 public class LoanApplicant {
     private long ssn, creditScore, loanAmount, currentDebt, yearlySalary, durationMonths;
-    private String loanType, applicationID;
+    private String loanType, applicationID, firstName, lastName, loanMessage;
     private boolean bankAccept;
     private double ARP, monthlyPayment;
 }

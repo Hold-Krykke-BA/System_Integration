@@ -1,11 +1,13 @@
 package holdkrykke.client.requestReply.config;
 
 import holdkrykke.client.model.LoanApplicant;
+import org.apache.camel.CamelContext;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.RoundRobinAssignor;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +28,9 @@ import java.util.Map;
 
 @Configuration
 public class KafkaConfig {
+
+    @Autowired
+    CamelContext camelContext;
 
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
