@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import holdkrykke.client.model.LoanApplicant;
+import holdkrykke.client.model.LoanApplicantOutDTO;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
@@ -34,27 +35,21 @@ public class LoanController {
     String requestReplyTopic;
 
     @ResponseBody
-    @PostMapping(value="/sum",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
-    public LoanApplicant sum(@RequestBody LoanApplicant request) throws InterruptedException, ExecutionException {
+    @PostMapping(value="/loanapplication",produces=MediaType.APPLICATION_JSON_VALUE,consumes=MediaType.APPLICATION_JSON_VALUE)
+    public LoanApplicantOutDTO loanapplication(@RequestBody LoanApplicant request) throws InterruptedException, ExecutionException {
         // create producer record
         ProducerRecord<String, LoanApplicant> record = new ProducerRecord<String, LoanApplicant>(requestTopic, request);
         // set reply topic in header
         record.headers().add(new RecordHeader(KafkaHeaders.REPLY_TOPIC, requestReplyTopic.getBytes()));
         // post in kafka topic
         RequestReplyFuture<String, LoanApplicant, LoanApplicant> sendAndReceive = kafkaTemplate.sendAndReceive(record);
-
         // confirm if producer produced successfully
         SendResult<String, LoanApplicant> sendResult = sendAndReceive.getSendFuture().get();
-
         //print all headers
         sendResult.getProducerRecord().headers().forEach(header -> System.out.println(header.key() + ":" + Arrays.toString(header.value())));
-
         // get consumer record
         ConsumerRecord<String, LoanApplicant> consumerRecord = sendAndReceive.get();
-
-        System.out.println(consumerRecord.value());
-        // return consumer value
-        return consumerRecord.value();
+        return new LoanApplicantOutDTO(consumerRecord.value());
     }
 
 }

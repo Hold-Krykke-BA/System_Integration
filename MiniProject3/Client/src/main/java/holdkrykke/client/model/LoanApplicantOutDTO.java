@@ -12,7 +12,19 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class LoanApplicantOutDTO {
-    private long ssn, loanAmount, durationMonths, monthlyPayment;
-    private String loanType, applicationID, ARP;
+    private long ssn, loanAmount, durationMonths;
+    private String loanType, applicationID;
     private boolean bankAccept;
+    private double ARP, monthlyPayment;
+
+    public LoanApplicantOutDTO(LoanApplicant applicant){
+        this.ssn = applicant.getSsn();
+        this.loanAmount = applicant.getLoanAmount();
+        this.durationMonths = applicant.getDurationMonths();
+        this.loanType = applicant.getLoanType();
+        this.applicationID = applicant.getApplicationID();
+        this.bankAccept = applicant.isBankAccept();
+        this.ARP = applicant.getARP();
+        this.monthlyPayment = applicant.getMonthlyPayment();
+    }
 }

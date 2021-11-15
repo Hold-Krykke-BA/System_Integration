@@ -12,7 +12,10 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class LoanApplicant {
-    private long ssn, creditScore, loanAmount, currentDebt, yearlySalary, durationMonths, monthlyPayment;
-    private String loanType, applicationID, ARP;
+    private long ssn, creditScore, loanAmount, currentDebt, yearlySalary, durationMonths;
+    private String loanType, applicationID;
     private boolean bankAccept;
+    private double ARP, monthlyPayment;
 }
+
+
