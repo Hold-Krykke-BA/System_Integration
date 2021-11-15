@@ -27,19 +27,19 @@ public class ConsumerService {
         return request;
     }
 
-    @KafkaListener(topics = "request-topic", groupId = "requestreplygroup2")
-    @SendTo
-    public LoanApplicant listen2(LoanApplicant request) throws InterruptedException {
-        System.out.println("Consumer2\n" +request);
-
-        request.setBankAccept(acceptedOrDeclined(request));
-        request.setARP(calculateARP(request));
-        request.setDurationMonths(calculateDurationMonths(request));
-        request.setMonthlyPayment(calculateMonthlyPayment(request));
-        request.setApplicationID(generateApplicationID());
-        System.out.println("Consumer2 response\n" +request);
-        return request;
-    }
+//    @KafkaListener(topics = "request-topic", groupId = "requestreplygroup2")
+//    @SendTo
+//    public LoanApplicant listen2(LoanApplicant request) throws InterruptedException {
+//        System.out.println("Consumer2\n" +request);
+//
+//        request.setBankAccept(acceptedOrDeclined(request));
+//        request.setARP(calculateARP(request));
+//        request.setDurationMonths(calculateDurationMonths(request));
+//        request.setMonthlyPayment(calculateMonthlyPayment(request));
+//        request.setApplicationID(generateApplicationID());
+//        System.out.println("Consumer2 response\n" +request);
+//        return request;
+//    }
 
     private boolean acceptedOrDeclined(LoanApplicant loanapplicant){
         return loanapplicant.getCreditScore() > 550 && loanapplicant.getYearlySalary() > 100000;
