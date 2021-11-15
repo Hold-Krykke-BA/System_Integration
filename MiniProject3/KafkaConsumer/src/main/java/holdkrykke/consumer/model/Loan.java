@@ -30,8 +30,15 @@ public class Loan {
     private int durationInMonths;
 
     static {
+        String name;
+        if (applicant.getFirstName() == null || applicant.getLastName() == null) {
+            name = "";
+        } else {
+            name = applicant.getFirstName() + " " + applicant.getLastName();
+        }
+
         loanMessage = String.format("Dear Mx %s\n " +
-                "Thank you for your application to our bank. Below you will find the details of the loan.", applicant.getLastName());
+                "Thank you for your application to our bank. Below you will find the details of the loan.", name);
 
     }
 
