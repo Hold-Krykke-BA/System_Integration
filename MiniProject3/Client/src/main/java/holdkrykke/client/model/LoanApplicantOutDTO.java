@@ -1,4 +1,4 @@
-package holdkrykke.consumer.consumer;
+package holdkrykke.client.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LoanApplicant {
-    private long ssn, creditScore, loanAmount, currentDebt, yearlySalary, durationMonths, monthlyPayment;
+@ToString
+public class LoanApplicantOutDTO {
+    private long ssn, loanAmount, durationMonths, monthlyPayment;
     private String loanType, applicationID, ARP;
     private boolean bankAccept;
 }

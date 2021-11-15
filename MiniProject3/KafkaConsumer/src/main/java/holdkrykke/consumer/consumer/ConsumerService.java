@@ -29,8 +29,13 @@ public class ConsumerService
     @SendTo
     public LoanApplicant listen(LoanApplicant request) throws InterruptedException {
         System.out.println(request);
+
+        request.setBankAccept(true); // make true or false based on creditscore and possibly salary and debt in combination with random
+        request.setARP("5%"); // find usual levels and make random in that interval
+        request.setMonthlyPayment(1200); // make random based on loan amount and duration
+        request.setDurationMonths(360); // make random between 6 and 360
         request.setApplicationID("HAT-HATTER-HAT");
-        //request.setAdditionalProperty("sum", sum);
+
 
 //
 //        JsonSerializer<LoanApplicant> json = new JsonSerializer<LoanApplicant>();
