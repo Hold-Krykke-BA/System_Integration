@@ -14,11 +14,8 @@ import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 
 @RestController
@@ -55,6 +52,28 @@ public class LoanController {
         System.out.println(consumerRecord.value());
         // return consumer value
         return consumerRecord.value();
+    }
+
+    /**
+     * Accept loan at
+     * @param applicant
+     * @return
+     */
+    @GetMapping(path = {"/loan/{applicationID}"})
+    public void acceptLoanFromBank(String applicant) {
+        //todo Return type should be LoanDTO
+        //Accept this loan in question
+        //How do we know which bank to target? Should this be included in the bank response, and the request should be sent to here?
+
+        //call external bank
+        final String uri = "http://localhost:9004";
+        RestTemplate template = new RestTemplate(); //this is old but we need to install SpringReactiveWeb for modern "WebClient" https://stackoverflow.com/questions/42365266/call-another-rest-api-from-my-server-in-spring-boot
+
+        //get response
+        String result = template.getForObject(uri, String.class); //should be a json object
+
+        //serve response
+        System.out.println(result);
     }
 
 }
