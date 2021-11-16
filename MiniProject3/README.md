@@ -36,6 +36,11 @@ We had a lot of trouble with Kafka, both regarding the implementation of replyin
   }
   ```
 
+You will then receive loan responses and can accept one of your chosing by ...
+
+```diff
+- todo write up endpoints from classes
+```
 
 ## Resources
 - [medium.com/@jhansireddy007/how-to-parallelise-kafka-consumers-59c8b0bbc37a](https://medium.com/@jhansireddy007/how-to-parallelise-kafka-consumers-59c8b0bbc37a)
