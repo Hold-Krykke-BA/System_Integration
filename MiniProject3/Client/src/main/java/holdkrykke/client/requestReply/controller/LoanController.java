@@ -51,7 +51,7 @@ public class LoanController {
         // confirm if producer produced successfully
         SendResult<String, LoanApplicant> sendResult = sendAndReceive.getSendFuture().get();
         //print all headers
-        sendResult.getProducerRecord().headers().forEach(header -> System.out.println(header.key() + ":" + Arrays.toString(header.value())));
+        //sendResult.getProducerRecord().headers().forEach(header -> System.out.println(header.key() + ":" + Arrays.toString(header.value())));
         // get consumer record
         ConsumerRecord<String, LoanApplicant> consumerRecord = sendAndReceive.get();
 
