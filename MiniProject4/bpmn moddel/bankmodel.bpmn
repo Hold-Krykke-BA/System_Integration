@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1w0ipsm" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
-  <bpmn:process id="BankModelv10" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_1" name="Loan Application">
+  <bpmn:process id="BankModelv30" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Loan Application" camunda:formRef="apply.form" camunda:formRefBinding="deployment">
+      <bpmn:extensionElements>
+        <camunda:formData businessKey="Name">
+          <camunda:formField id="Name" label="Name" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1v812f5</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1v812f5" sourceRef="StartEvent_1" targetRef="Activity_validate" />
-    <bpmn:sequenceFlow id="Flow_1ux13jh" name="Not Validated" sourceRef="Activity_validate" targetRef="Event_LoanRejected" />
+    <bpmn:sequenceFlow id="Flow_1ux13jh" name="Not Validated" sourceRef="Activity_validate" targetRef="Activity_0kx4poe" />
     <bpmn:endEvent id="Event_LoanRejected" name="Loan Request Rejected">
       <bpmn:incoming>Flow_06i4g08</bpmn:incoming>
-      <bpmn:incoming>Flow_1ux13jh</bpmn:incoming>
       <bpmn:incoming>Flow_11sw3jr</bpmn:incoming>
       <bpmn:incoming>Flow_04g4kld</bpmn:incoming>
+      <bpmn:incoming>Flow_0i77x1m</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0apa5q4" sourceRef="Activity_validate" targetRef="Activity_AgentLook" />
     <bpmn:sequenceFlow id="Flow_1b57ul6" sourceRef="Activity_AgentLook" targetRef="Gateway_AcceptDeny" />
@@ -59,7 +64,7 @@
       <bpmn:outgoing>Flow_06i4g08</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:boundaryEvent id="Event_0v5xsut" name="Invalid application" attachedToRef="Activity_validate">
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0z36hwa" />
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0z36hwa" errorRef="Error_0skfqhd" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Event_0xyjsaa" cancelActivity="false" attachedToRef="Activity_CustomerLook">
       <bpmn:outgoing>Flow_11sw3jr</bpmn:outgoing>
@@ -68,9 +73,15 @@
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_11sw3jr" sourceRef="Event_0xyjsaa" targetRef="Event_LoanRejected" />
+    <bpmn:sequenceFlow id="Flow_0i77x1m" sourceRef="Activity_0kx4poe" targetRef="Event_LoanRejected" />
+    <bpmn:userTask id="Activity_0kx4poe" name="Check Invalidated">
+      <bpmn:incoming>Flow_1ux13jh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0i77x1m</bpmn:outgoing>
+    </bpmn:userTask>
   </bpmn:process>
+  <bpmn:error id="Error_0skfqhd" name="Error_0b790gi" errorCode="Error_0b790gi" camunda:errorMessage="Invalid application, please retry" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="BankModelv10">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="BankModelv30">
       <bpmndi:BPMNEdge id="Flow_1dsnxpb_di" bpmnElement="Flow_1dsnxpb">
         <di:waypoint x="1140" y="127" />
         <di:waypoint x="1232" y="127" />
@@ -119,7 +130,7 @@
       <bpmndi:BPMNEdge id="Flow_1ux13jh_di" bpmnElement="Flow_1ux13jh">
         <di:waypoint x="330" y="167" />
         <di:waypoint x="330" y="340" />
-        <di:waypoint x="592" y="340" />
+        <di:waypoint x="450" y="340" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="337" y="303" width="66" height="14" />
         </bpmndi:BPMNLabel>
@@ -132,6 +143,10 @@
         <di:waypoint x="750" y="185" />
         <di:waypoint x="750" y="340" />
         <di:waypoint x="628" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0i77x1m_di" bpmnElement="Flow_0i77x1m">
+        <di:waypoint x="550" y="340" />
+        <di:waypoint x="592" y="340" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="109" width="36" height="36" />
@@ -171,6 +186,9 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1215" y="154.5" width="69" height="27" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0je3cpp_di" bpmnElement="Activity_0kx4poe">
+        <dc:Bounds x="450" y="300" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1t4xu1x_di" bpmnElement="Event_0v5xsut">
         <dc:Bounds x="312" y="149" width="36" height="36" />
