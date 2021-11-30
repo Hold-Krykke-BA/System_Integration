@@ -2,13 +2,30 @@
   "schemaVersion": 2,
   "components": [
     {
+      "label": "Amount",
+      "type": "number",
+      "id": "Field_0dg7qox",
+      "key": "Amount",
+      "validate": {
+        "required": false
+      },
+      "description": "Loan amount in DKK"
+    },
+    {
+      "label": "Debt",
+      "type": "number",
+      "id": "Field_0swsggk",
+      "key": "Debt",
+      "description": "Current debt in DKK"
+    },
+    {
       "label": "Name",
       "type": "textfield",
       "id": "Field_0lm9wf6",
       "key": "Name",
-      "description": "What is your name?",
+      "description": "Legal name",
       "validate": {
-        "required": true
+        "required": false
       }
     },
     {
@@ -17,49 +34,34 @@
       "id": "Field_1197rtl",
       "key": "Age",
       "validate": {
-        "required": true,
-        "min": 12
-      },
-      "description": "How old are you?"
+        "required": false
+      }
     },
     {
       "label": "Salary",
       "type": "number",
       "id": "Field_18uq1xi",
       "key": "Salary",
-      "description": "What is your current income pr month?"
-    },
-    {
-      "label": "Amount",
-      "type": "number",
-      "id": "Field_0dg7qox",
-      "key": "Amount",
+      "description": "Monthly salary in DKK",
       "validate": {
-        "required": true,
-        "min": 500
-      },
-      "description": "How much money would you like to borrow?"
+        "required": false
+      }
     },
     {
-      "label": "Address",
-      "type": "textfield",
-      "id": "Field_041vxwk",
-      "key": "Address",
-      "description": "Where do you live"
-    },
-    {
-      "label": "Married",
-      "type": "checkbox",
-      "id": "Field_1h45pqk",
-      "key": "Married",
-      "description": "Are you married?"
-    },
-    {
-      "label": "Have loan",
-      "type": "checkbox",
-      "id": "Field_1nfp7sd",
-      "key": "Have_loan",
-      "description": "Do you currently owe money to us or another bank??"
+      "values": [
+        {
+          "label": "Married",
+          "value": "Married"
+        },
+        {
+          "label": "Single",
+          "value": "Single"
+        }
+      ],
+      "label": "Relationship status",
+      "type": "radio",
+      "id": "Field_17i6qqr",
+      "key": "Status"
     },
     {
       "action": "submit",
@@ -70,7 +72,5 @@
     }
   ],
   "type": "default",
-  "id": "apply.form",
-  "executionPlatform": "Camunda Platform",
-  "executionPlatformVersion": "7.16"
+  "id": "apply.form"
 }
