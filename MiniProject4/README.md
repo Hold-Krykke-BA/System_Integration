@@ -63,5 +63,5 @@ After the process is complete, the Loan Agreement is saved in the folder [/appro
  in `http://localhost:8080/camunda/app/tasklist/` and choose `BankModelv1`
 
 ## Resources
-[camunda-external-task-client-js](https://github.com/camunda/camunda-external-task-client-js)
+[github.com/camunda/camunda-external-task-client-js](https://github.com/camunda/camunda-external-task-client-js)
 
