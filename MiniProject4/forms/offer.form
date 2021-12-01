@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 2,
+  "components": [
+    {
+      "label": "Approval",
+      "type": "textfield",
+      "id": "Field_17waxj1",
+      "key": "client_approve",
+      "description": "Confirmation by client, Approve or Deny"
+    },
+    {
+      "text": "## Loan Offer:",
+      "type": "text",
+      "id": "Field_17oopsy"
+    },
+    {
+      "label": "Name",
+      "type": "textfield",
+      "id": "Field_0lm9wf6",
+      "key": "Name",
+      "description": "Legal name",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "label": "SSN",
+      "type": "number",
+      "id": "Field_1197rtl",
+      "key": "SSN",
+      "validate": {
+        "required": false
+      },
+      "description": "Social Security Number"
+    },
+    {
+      "label": "Amount",
+      "type": "number",
+      "id": "Field_0dg7qox",
+      "key": "Amount",
+      "validate": {
+        "required": false
+      },
+      "description": "Loan amount in DKK"
+    },
+    {
+      "label": "Interest",
+      "type": "textfield",
+      "id": "Field_0vfjh6u",
+      "key": "Interest",
+      "description": "Monthly intrest on loan"
+    },
+    {
+      "label": "Duration",
+      "type": "textfield",
+      "id": "Field_1r7mc85",
+      "key": "Duration",
+      "description": "Loan Duration in months"
+    },
+    {
+      "label": "Payment",
+      "type": "textfield",
+      "id": "Field_0kz03kr",
+      "key": "Payment",
+      "description": "Monthly payment amount"
+    },
+    {
+      "label": "Approval",
+      "type": "textfield",
+      "id": "Field_1yxww56",
+      "key": "bank_approve",
+      "description": "Confirmation by bank, Approve or Deny"
+    },
+    {
+      "action": "submit",
+      "label": "Submit",
+      "type": "button",
+      "id": "Field_1it3sqm",
+      "key": "field_0m4zhpx"
+    }
+  ],
+  "type": "default",
+  "id": "Form_0uu3cd3"
+}
