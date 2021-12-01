@@ -1,0 +1,14 @@
+{
+  "Status": "Married",
+  "Interest": "3",
+  "Salary": 39000,
+  "Payment": "1050",
+  "Debt": 0,
+  "bank_approve": "Approve",
+  "client_approve": "Approve",
+  "Amount": 150000,
+  "Duration": "70",
+  "CreditScore": 680,
+  "Name": "Rúni Niclasen",
+  "SSN": 2308974444
+}
