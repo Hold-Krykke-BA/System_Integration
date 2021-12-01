@@ -1,87 +1,46 @@
+const fs = require('fs')
 const { Client, logger } = require("camunda-external-task-client-js");
-
-// configuration for the Client:
-//  - 'baseUrl': url to the Process Engine
-//  - 'logger': utility to automatically log important events
 const config = { baseUrl: "http://localhost:8080/engine-rest", use: logger };
-
-// create a Client instance with custom configuration
 const client = new Client(config);
 
 client.subscribe("topicValidation", async function ({ task, taskService }) {
+  console.log('inside topicValidation')
+  const amount = await task.variables.get("Amount");
+  const debt = await task.variables.get("Debt");
+  const name = await task.variables.get("Name");
+  const SSN = await task.variables.get("SSN");
+  const creditScore = await task.variables.get("CreditScore"); //number
+  const salary = await task.variables.get("Salary"); //long
+  const status = await task.variables.get("Status"); //
 
-  const amount = task.variables.get("Amount");
-  const debt = task.variables.get("Debt");
-  const name = task.variables.get("Name");
-  const age = task.variables.get("Age"); //number
-  const salary = task.variables.get("Salary"); //long
-  const status = task.variables.get("Status"); //
+  let applicationCheck = false;
+  if (amount > 10000 && debt < 100000 && name.length > 3 && SSN.toString().length === 10
+    && creditScore > 600 && salary > 20000 && status) {
+    applicationCheck = true;
+  }
 
-  // task.variables.set("Interest", "5%")
-  // task.variables.set("Duration", "10 years")
-  // task.variables.set("Payment", "2000 DKK")
-
-
-
-  // console.log(task.variables.get("Interest"))
-  // console.log(task.variables.get("Duration"))
-  // console.log(task.variables.get("Payment"))
-
-  // console.log('amount', amount, typeof(amount))
-  // console.log('debt', debt, typeof(debt))
-  // console.log('age', age, typeof(age))
-  // console.log('salary', salary, typeof(salary))
-  // console.log('status', status, typeof(status))
-
-
-
-  if (name) {
-    console.log('length accepted')
+  if (applicationCheck) {
+    console.log('Application validated')
+    //task.variables.set('Interest', '5%')
+    //const variables = await new Variables().set('Interest', '5%');
     await taskService.complete(task);
   } else {
-    console.log('denied')
+    console.log('Application ´not validated')
     await taskService.handleBpmnError(task, "Error_0b790gi", "Name too short");
   }
 });
 
 
-// client.subscribe("topicCreate", async function ({ task, taskService }) {
-//   const amount = task.variables.get("Amount");
-//   const debt = task.variables.get("Debt");
-//   const name = task.variables.get("Name");
-//   const age = task.variables.get("Age"); //number
-//   const salary = task.variables.get("Salary"); //long
-//   const status = task.variables.get("Status"); //
-
-//   console.log('amount', amount, typeof (amount))
-//   console.log('debt', debt, typeof (debt))
-//   console.log('age', age, typeof (age))
-//   console.log('salary', salary, typeof (salary))
-//   console.log('status', status, typeof (status))
-//   console.log('***********')
-//   console.log(task.variables.get("Interest"))
-//   console.log(task.variables.get("Duration"))
-//   console.log(task.variables.get("Payment"))
-//   await taskService.complete(task);
-// });
-
-
 client.subscribe("topicCustomer", async function ({ task, taskService }) {
-  const amount = task.variables.get("Amount");
-  const debt = task.variables.get("Debt");
-  const name = task.variables.get("Name");
-  const age = task.variables.get("Age"); //number
-  const salary = task.variables.get("Salary"); //long
-  const status = task.variables.get("Status"); //
+  const content = await task.variables.getAll()
+  const SSN = await task.variables.get("SSN");
 
-  console.log('amount', amount, typeof (amount))
-  console.log('debt', debt, typeof (debt))
-  console.log('age', age, typeof (age))
-  console.log('salary', salary, typeof (salary))
-  console.log('status', status, typeof (status))
-  console.log('***********')
-  console.log(task.variables.get("Interest"))
-  console.log(task.variables.get("Duration"))
-  console.log(task.variables.get("Payment"))
+  fs.writeFileSync(`./approved_loans/${SSN}.json`, JSON.stringify(content, null, 2), err => {
+    if (err) {
+      console.error(err)
+      return
+    }
+  })
+  console.log(`Loan aggrement saved as ${SSN}`)
   await taskService.complete(task);
 });

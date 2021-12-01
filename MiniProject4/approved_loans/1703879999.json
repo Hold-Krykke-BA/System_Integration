@@ -1,0 +1,14 @@
+{
+  "Status": "Married",
+  "Interest": "2",
+  "Salary": 38000,
+  "Payment": "1050",
+  "Debt": 15000,
+  "bank_approve": "Approve",
+  "client_approve": "Approve",
+  "Amount": 65000,
+  "Duration": "48",
+  "CreditScore": 680,
+  "Name": "Camilla Staunstrup",
+  "SSN": 1703879999
+}
