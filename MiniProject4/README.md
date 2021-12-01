@@ -9,7 +9,7 @@
 ## Process
 We had a lotof trouble with understandig how Camunda works as we found the documentation very confusing. We decided to take a simple approach in hopes of getting a better grasp on Camunda an chose a [javascrip library](https://github.com/camunda/camunda-external-task-client-js) in order to work with the Camunda-tasks.  
 
-Out implementation in JavaScript is very basic as we couldn't figure out how to update the task variables before the assignment-deadline. This is something we very much would like feedback on in peergrade if anyone else have found a way to do this (dosen't have to be in JavaScript). 
+*Out implementation in JavaScript is very basic as we couldn't figure out how to update the task variables before the assignment-deadline. This is something we very much would like feedback on in peergrade if anyone else have found a way to do this (dosen't have to be in JavaScript). *
 
 ## Results
 Our camunda model and forms can be found here:
