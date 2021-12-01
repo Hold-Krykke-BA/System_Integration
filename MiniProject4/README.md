@@ -1,4 +1,4 @@
-# MiniProject 3
+# MiniProject 4
 
 ## Contributors
 - _[Rúni Vedel Niclasen - cph-rn118](https://github.com/Runi-VN)_
