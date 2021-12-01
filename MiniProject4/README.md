@@ -16,6 +16,9 @@ Our camunda model and forms can be found here:
 - [Model](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/MiniProject4/bpmn%20moddel/bankmodel.bpmn)
 - [Forms](https://github.com/Hold-Krykke-BA/System_Integration/tree/main/MiniProject4/forms)
 
+### Code
+We have two very basic listeners in the [external_worker.js](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/MiniProject4/external_worker.js). One listening for the for the startevent to check the client input. It is in this part we would have liked to add additional variables to the task object. The last listener is listening for the customers approval and saves the loan agreement. 
+
 ### Screenshots
 **MODEL**  
 ![image](https://user-images.githubusercontent.com/35559774/144232337-8c172e26-17aa-4699-907d-bbfbbd01e3ed.png)  
