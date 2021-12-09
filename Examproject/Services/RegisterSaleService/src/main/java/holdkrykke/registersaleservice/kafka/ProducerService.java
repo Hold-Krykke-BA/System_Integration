@@ -16,12 +16,13 @@ public class ProducerService
 
     @Autowired
     // Ignore the compiler's warning
-    private KafkaTemplate<String, Object> template;
+    private KafkaTemplate<String, String> template;
 
-    public void sendObject(String customer)
+    public void sendMessage(String message)
     {
-        template.send(topic, customer);
-        logger.info("### Producer sends customer [{}:{}]", customer);
+        template.send(topic, message);
+        // logger.info(String.format("### -> Producer sends message -> %s", message));
+        logger.info("### Producer sends message [{}]", message);
         template.flush();
     }
 }
