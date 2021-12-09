@@ -1,4 +1,4 @@
-# ExamProject 4
+# System Integration Exam Project 
 
 ## Contributors
 - _[Rúni Vedel Niclasen - cph-rn118](https://github.com/Runi-VN)_
