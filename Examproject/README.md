@@ -1,4 +1,4 @@
-# MiniProject 4
+# ExamProject 4
 
 ## Contributors
 - _[Rúni Vedel Niclasen - cph-rn118](https://github.com/Runi-VN)_
