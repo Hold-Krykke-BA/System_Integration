@@ -63,7 +63,7 @@ public class ISBNValidationClient {
         } catch (RemoteException e) {
             throw new ISBNValidationException("Failed to establish remote connection.", e);
         }
-        throw new ISBNValidationException(String.format("ISBN input %s is not a valid ISBN format", ISBN));
+        throw new ISBNValidationException(String.format("ISBN input \"%s\" is not a valid ISBN format", ISBN));
     }
 
 }
