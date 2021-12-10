@@ -1,6 +1,7 @@
 package holdkrykke.registernewbookservice.controllers;
 
 import holdkrykke.Exceptions.ISBNValidationException;
+import holdkrykke.registernewbookservice.models.ISBNdto;
 import holdkrykke.registernewbookservice.services.soap.ISBNValidationClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,9 +24,10 @@ public class ISBNValidationController {
 
     @GetMapping("/{ISBN}")
     @Produces(MediaType.APPLICATION_JSON_VALUE)
-    public boolean validateISBN(@PathVariable("ISBN") String ISBN) {
+    public ISBNdto validateISBN(@PathVariable("ISBN") String ISBN) {
         try {
-            return client.validateISBN(ISBN);
+            boolean validity = client.validateISBN(ISBN);
+            return new ISBNdto(ISBN, validity);
         } catch (ISBNValidationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
