@@ -20,6 +20,7 @@ public class ProducerService
 
     public void sendMessage(String message)
     {
+
         template.send(topic, message);
         // logger.info(String.format("### -> Producer sends message -> %s", message));
         logger.info("### Producer sends message [{}]", message);
