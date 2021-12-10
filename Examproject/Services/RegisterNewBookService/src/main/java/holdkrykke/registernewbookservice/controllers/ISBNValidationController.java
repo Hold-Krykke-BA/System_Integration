@@ -18,9 +18,8 @@ import javax.ws.rs.Produces;
 @RequestMapping("/isbn")
 public class ISBNValidationController {
 
-    //todo remake to bean for autowired
-    //@Autowired
-    ISBNValidationClient client = ISBNValidationClient.getInstance();
+    @Autowired
+    ISBNValidationClient client;
 
     @GetMapping("/{ISBN}")
     @Produces(MediaType.APPLICATION_JSON_VALUE)

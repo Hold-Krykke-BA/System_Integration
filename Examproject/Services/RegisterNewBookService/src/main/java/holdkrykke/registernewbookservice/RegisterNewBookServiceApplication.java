@@ -12,9 +12,10 @@ public class RegisterNewBookServiceApplication {
 
     public static void main(String[] args) throws ISBNValidationException {
         SpringApplication.run(RegisterNewBookServiceApplication.class, args);
-//        var uno = ISBNValidationClient.getInstance().validateISBN("87-01-32671-6");
-//        var dos = ISBNValidationClient.getInstance().validateISBN("87-01-32671-6");
-//        var tres = ISBNValidationClient.getInstance().validateISBN("NotAnISBN");
+//        ISBNValidationClient client = new ISBNValidationClient();
+//        var uno = client.validateISBN("87-01-32671-6");
+//        var dos = client.validateISBN("87-01-32671-6");
+//        var tres = client.validateISBN("NotAnISBN");
 //
 //        System.out.println("should be true: " + uno);
 //        System.out.println("should be true: " + dos);

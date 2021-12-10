@@ -3,36 +3,39 @@ package holdkrykke.registernewbookservice.services.soap;
 import holdkrykke.Exceptions.ISBNValidationException;
 import holdkrykke.registernewbookservice.services.soap.consumingwebservice.ISBNServiceLocator;
 import holdkrykke.registernewbookservice.services.soap.consumingwebservice.ISBNServiceSoapType;
+import org.springframework.stereotype.Service;
 
 import javax.xml.rpc.ServiceException;
 import java.rmi.RemoteException;
 
 /**
- * Singleton implementation of the ISBN Validation Client of the ISBN Validation SOAP service.
+ * ISBN Validation Client of the ISBN Validation SOAP service.
  */
+@Service
 public class ISBNValidationClient {
 
-    private static ISBNValidationClient instance = new ISBNValidationClient();
     private static ISBNServiceLocator locator;
     private static ISBNServiceSoapType service;
 
-    private ISBNValidationClient() {
+    static {
+        boolean success = initialize();
+        if (success) System.out.println("Succesfully instantiated the ISBN Validation Client!");
+    }
+
+    private static boolean initialize() {
         System.out.println("Attempting to instantiate the ISBN Validation Client.");
         locator = new ISBNServiceLocator();
         try {
             service = locator.getISBNServiceSoap();
+            return true;
         } catch (ServiceException e) {
             //throw new ISBNValidationException("Could not instantiate ISBN SOAP service", e);
             System.out.println("Unable to instantiate ISBN SOAP service:\n");
             e.printStackTrace();
-            return;
+            return false;
         }
-        System.out.println("Succesfully instantiated the ISBN Validation Client!");
     }
 
-    public static ISBNValidationClient getInstance() {
-        return instance;
-    }
 
     /**
      * Determines the ISBN standard by length and validates it by a remote SOAP service.
