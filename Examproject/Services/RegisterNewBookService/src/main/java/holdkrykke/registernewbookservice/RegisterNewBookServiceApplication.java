@@ -4,8 +4,10 @@ import holdkrykke.Exceptions.ISBNValidationException;
 import holdkrykke.registernewbookservice.services.soap.ISBNValidationClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication
+@EnableMongoRepositories
 public class RegisterNewBookServiceApplication {
 
     public static void main(String[] args) throws ISBNValidationException {
