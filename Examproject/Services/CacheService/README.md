@@ -18,6 +18,12 @@ Initialized with:
 - Spring Boot Actuator
 - Netflix Eureka Discovery Client
 
+### Implementation details
+Spring Data Redis allows use of both `Lettuce` and `Jedis` integrations.  
+Lettuce is basically a wrapper for Jedis with additional features on top (that we do not need),  
+so we decided to use Jedis due to familiarity and simplicity.
+
+
 ## Integrations
 - External API at ...
 - Self-hosted Redis hosted in docker at localhost:1234
@@ -30,7 +36,7 @@ Initialized with:
 - gRPC
 
 ## Setup
-1. Run Redis through docker with command `todo`.
+1. Run Redis through docker with command `docker run --name redis -v redis-data:/data -p 6379:6379 -d redis:alpine`.
 2. Build project using Maven
 3. Run project
 
