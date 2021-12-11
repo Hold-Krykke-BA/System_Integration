@@ -23,8 +23,18 @@ Initialized with:
 - Self-hosted Redis hosted in docker at localhost:1234
 - Cloud-hosted MongoDB Book storage
 
+## Tools
+- Netflix Eureka
+- Apache Camel
+- Spring Boot with plugins for MongoDB, Redis and REST
+- gRPC
 
 ## Setup
 1. Run Redis through docker with command `todo`.
 2. Build project using Maven
 3. Run project
+
+
+## Helpers
+- Integrated Camel plugin for the IntelliJ IDEA IDE
+![image](https://user-images.githubusercontent.com/37186286/145678245-e7683519-28d6-40fb-a839-5c2cb691debf.png)  
