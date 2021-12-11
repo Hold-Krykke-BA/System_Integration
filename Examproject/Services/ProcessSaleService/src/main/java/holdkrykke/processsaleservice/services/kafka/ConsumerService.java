@@ -34,12 +34,9 @@ public class ConsumerService {
             System.out.println(order.getId());
             Map<String, Object> variables = new HashMap<String, Object>();
             variables.put("order", order);
-            runtimeService.startProcessInstanceByKey("loanApproval",Variables.createVariables() //
+            runtimeService.startProcessInstanceByKey("orderProcessing",Variables.createVariables() //
                     .putValueTyped("order", Variables.objectValue(order).serializationDataFormat(Variables.SerializationDataFormats.JSON).create())
                     .putValue("orderType", order.getOrderType())
-//                    .putValue(ProcessConstants.VAR_NAME_uiBaseUrl, uiBaseUrl)//
-//                    .putValue(ProcessConstants.VAR_NAME_applicationNumber, application.getApplicationNumber())//
-//                    .putValue(ProcessConstants.VAR_NAME_applicantName, application.getApplicant().getName())//
             );
         }
 
