@@ -36,7 +36,7 @@ public class ConsumerService {
             variables.put("order", order);
             runtimeService.startProcessInstanceByKey("loanApproval",Variables.createVariables() //
                     .putValueTyped("order", Variables.objectValue(order).serializationDataFormat(Variables.SerializationDataFormats.JSON).create())
-                    .putValue("isDigital", order.getIsDigital())
+                    .putValue("orderType", order.getOrderType())
 //                    .putValue(ProcessConstants.VAR_NAME_uiBaseUrl, uiBaseUrl)//
 //                    .putValue(ProcessConstants.VAR_NAME_applicationNumber, application.getApplicationNumber())//
 //                    .putValue(ProcessConstants.VAR_NAME_applicantName, application.getApplicant().getName())//

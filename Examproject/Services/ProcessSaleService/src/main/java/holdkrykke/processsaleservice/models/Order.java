@@ -15,7 +15,7 @@ public class Order {
     private String id;
     private String orderNumber;
     private String orderStatus;
-    private Boolean isDigital;
+    private String orderType;
     private String customerMail;
     private String customerFullName;
     private String customerAddress;
