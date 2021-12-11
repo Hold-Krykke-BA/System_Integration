@@ -38,3 +38,5 @@ Initialized with:
 ## Helpers
 - Integrated Camel plugin for the IntelliJ IDEA IDE
 ![image](https://user-images.githubusercontent.com/37186286/145678245-e7683519-28d6-40fb-a839-5c2cb691debf.png)  
+- Integrated gRPC plugin for the IntelliJ IDEA IDE
+![image](https://user-images.githubusercontent.com/37186286/145678445-3f7eb144-c89e-4b6d-b072-309b1beb0c19.png)
