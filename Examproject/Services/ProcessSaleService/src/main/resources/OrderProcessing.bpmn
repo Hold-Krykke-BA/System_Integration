@@ -9,10 +9,6 @@
       <bpmn2:incoming>Flow_0h0xhp8</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_0oy9c54" sourceRef="Task_0dfv74n" targetRef="EndEvent_1" />
-    <bpmn2:userTask id="Task_0dfv74n" name="Ship Digital Order" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:assignee="demo">
-      <bpmn2:incoming>Flow_1kaayt2</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_0oy9c54</bpmn2:outgoing>
-    </bpmn2:userTask>
     <bpmn2:businessRuleTask id="Operation_1" name="Order Type Rules" camunda:resultVariable="isDigital" camunda:decisionRef="business-rules" camunda:mapDecisionResult="singleEntry">
       <bpmn2:incoming>Flow_12dle16</bpmn2:incoming>
       <bpmn2:outgoing>Flow_0je5e2o</bpmn2:outgoing>
@@ -40,6 +36,10 @@
       <bpmn2:outgoing>Flow_0h0xhp8</bpmn2:outgoing>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="Flow_0h0xhp8" sourceRef="Activity_1ez6xbd" targetRef="EndEvent_1" />
+    <bpmn2:serviceTask id="Task_0dfv74n" name="Ship Digital Order" camunda:class="holdkrykke.processsaleservice.services.camunda.ProcessRequestDelegate">
+      <bpmn2:incoming>Flow_1kaayt2</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0oy9c54</bpmn2:outgoing>
+    </bpmn2:serviceTask>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="orderProcessing">
@@ -96,9 +96,6 @@
       <bpmndi:BPMNShape id="Activity_0y6qp3u_di" bpmnElement="Activity_1rb6qyk">
         <dc:Bounds x="650" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_0k9otqc_di" bpmnElement="Task_0dfv74n" bioc:stroke="#000000" bioc:fill="#ffffff" color:background-color="#ffffff" color:border-color="#000000">
-        <dc:Bounds x="570" y="130" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0b9xjjc_di" bpmnElement="Gateway_0b9xjjc" isMarkerVisible="true">
         <dc:Bounds x="465" y="247" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -113,6 +110,9 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="870" y="253" width="72" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ud6hq8_di" bpmnElement="Task_0dfv74n" bioc:stroke="#000000" bioc:fill="#ffffff" color:background-color="#ffffff" color:border-color="#000000">
+        <dc:Bounds x="570" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

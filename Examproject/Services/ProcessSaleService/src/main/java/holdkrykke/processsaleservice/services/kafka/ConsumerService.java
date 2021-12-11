@@ -9,11 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ConsumerService {
@@ -26,20 +23,15 @@ public class ConsumerService {
     private RuntimeService runtimeService;
 
     @KafkaListener(topics = "saleregistered", groupId = "salegroup")
-    public void consume(String message) throws IOException
-    {
+    public void consume(String message) throws IOException {
         System.out.println("Consumed message:" + message);
         List<Order> retrieved = orderRepository.findAll();
         for(Order order: retrieved){
             System.out.println(order.getId());
-            Map<String, Object> variables = new HashMap<String, Object>();
-            variables.put("order", order);
             runtimeService.startProcessInstanceByKey("orderProcessing",Variables.createVariables() //
                     .putValueTyped("order", Variables.objectValue(order).serializationDataFormat(Variables.SerializationDataFormats.JSON).create())
                     .putValue("orderType", order.getOrderType())
             );
         }
-
-
     }
 }
