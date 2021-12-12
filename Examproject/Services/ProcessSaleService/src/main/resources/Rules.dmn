@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="SystemRules" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <decision id="business-rules" name="Order Type Rules">
+    <decisionTable id="DecisionTable_0vql1sk">
+      <input id="Input_1" biodi:width="192">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>orderType</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" name="isDigital" typeRef="boolean" biodi:width="192" />
+      <rule id="DecisionRule_1huba8a">
+        <inputEntry id="UnaryTests_1r5dmie">
+          <text>"book"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0qw81p0">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_158mquo">
+        <inputEntry id="UnaryTests_0hzqc5h">
+          <text>"audiobook"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1sulzz2">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1h5wucc">
+        <inputEntry id="UnaryTests_1sp3m0l">
+          <text>"ebook"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0usgv8k">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="business-rules">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
