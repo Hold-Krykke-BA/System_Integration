@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItem {
-    private String ISBN;
+    private String isbn;
     private String title;
     private String authors;
     private String edition;

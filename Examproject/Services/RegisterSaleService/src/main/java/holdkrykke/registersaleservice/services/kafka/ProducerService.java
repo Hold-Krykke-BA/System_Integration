@@ -15,9 +15,9 @@ public class ProducerService {
     @Autowired
     private KafkaTemplate<String, String> template;
 
-    public void sendSaleRegisteredOnProcessingTopic(String topic, String message) {
+    public void sendSaleRegistered(String topic, String message) {
         template.send(topic, message);
-        logger.info("### Producer sends message [{}]", message);
+        logger.info("Producer sends on topic [{} {}]", topic, message);
         template.flush();
     }
 
