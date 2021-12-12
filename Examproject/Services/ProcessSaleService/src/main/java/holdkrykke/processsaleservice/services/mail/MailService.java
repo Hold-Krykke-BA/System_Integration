@@ -3,8 +3,6 @@ package holdkrykke.processsaleservice.services.mail;
 import holdkrykke.processsaleservice.models.Order;
 import holdkrykke.processsaleservice.models.OrderItem;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -18,7 +16,6 @@ public class MailService {
     private JavaMailSender javaMailSender;
 
     public void sendEmail(String to, String subject, String text) throws MessagingException {
-       // SimpleMailMessage message = new SimpleMailMessage();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
         helper.setFrom("holdkrykke.ba.si@gmail.com");
@@ -31,9 +28,10 @@ public class MailService {
     public String createBody(Order order){
         String items = "";
         for(OrderItem item : order.getOrderItems()){
-            String temp =  "<b>Title</b>" + item.getTitle() + "<br>"
-                    + "<b>Authors</b>" + item.getAuthors() + "<br>"
-                    + "<b>Price</b>" + item.getPrice() + "<br>";
+            String temp =  "<b>Title: </b>" + item.getTitle() + "<br>"
+                    + "<b>Authors: </b>" + item.getAuthors() + "<br>"
+                    + "<b>Price: </b>" + item.getPrice() + "<br>"
+                    + "-----<br>";
             items = items + temp;
 
         }
@@ -45,18 +43,8 @@ public class MailService {
                 + "<b>Mail: </b>" + order.getCustomerMail()
                 + "<h3>Order: </h3>"
                 + items + "<br>"
-                + "<b>Total price</b>: " + order.getTotalPrice() + "<br>";
+                + "<b>Total price: </b>: " + order.getTotalPrice() + "<br>";
         return mailText;
 
     }
-
-
 }
-
-//    public void sendSimpleMessage(String to, String subject, String text) {
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setFrom("holdkrykke.ba.si@gmail.com");
-//        message.setTo(to);
-//        message.setSubject(subject);
-//        message.setText(text);
-//        emailSender.send(message);
