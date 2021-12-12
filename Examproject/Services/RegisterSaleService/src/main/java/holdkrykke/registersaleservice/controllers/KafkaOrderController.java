@@ -10,32 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//@Value("${kafka.topic.requestreply-topic}")
+
 @RestController
 @RequestMapping("/kafka")
-public class KafkaOrderController
-{
-    // Option 1:
+public class KafkaOrderController {
+
     @Autowired
     private ProducerService service;
-
-    @PostMapping(value = "/message/{message}")
-    public String sendMyMessageToKafka(@PathVariable("message") String message)
-    {
-        service.sendMessage(message);
-        return "Message published: " + message;
-    }
-
-    // Option 2: Sending message with an async callback
-    @Autowired
-    private ProducerServiceCallBack serviceCallBack;
-
-    @PostMapping(value = "/message/callback/{message}")
-    public String sendMyMessageCallBack(@PathVariable("message") String message)
-    {
-        serviceCallBack.sendMessageCallBack(message);
-        return "Message published: " + message;
-    }
 
     @Autowired
     private OrderRepository orderRepository;

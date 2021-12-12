@@ -8,21 +8,16 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProducerService
-{
+public class ProducerService {
     @Value("${topic.name.producer}")
     String topic;
-    private static Logger logger = LoggerFactory.getLogger(ProducerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProducerService.class);
 
     @Autowired
-    // Ignore the compiler's warning
     private KafkaTemplate<String, String> template;
 
-    public void sendMessage(String message)
-    {
-
+    public void sendMessage(String message) {
         template.send(topic, message);
-        // logger.info(String.format("### -> Producer sends message -> %s", message));
         logger.info("### Producer sends message [{}]", message);
         template.flush();
     }
