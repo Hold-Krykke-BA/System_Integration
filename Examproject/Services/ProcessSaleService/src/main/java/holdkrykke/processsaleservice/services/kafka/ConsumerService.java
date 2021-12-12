@@ -25,10 +25,10 @@ public class ConsumerService {
     @KafkaListener(topics = "saleregistered", groupId = "salegroup")
     public void consume(String message) throws IOException {
         System.out.println("Consumed message:" + message);
-        List<Order> retrieved = orderRepository.findAll();
+        List<Order> retrieved = orderRepository.findByOrderStatus("registered");
         for(Order order: retrieved){
-            System.out.println(order.getId());
-            runtimeService.startProcessInstanceByKey("orderProcessing",Variables.createVariables() //
+            System.out.println("Received order: " + order.getId() + ", with order status: " + order.getOrderStatus());
+            runtimeService.startProcessInstanceByKey("orderProcessing",Variables.createVariables()
                     .putValueTyped("order", Variables.objectValue(order).serializationDataFormat(Variables.SerializationDataFormats.JSON).create())
                     .putValue("orderType", order.getOrderType())
             );
