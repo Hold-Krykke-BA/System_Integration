@@ -1,11 +1,10 @@
-package holdkrykke.processsaleservice;
-
+package holdkrykke.cacheservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ProcessSaleServiceApplicationTests {
+class CacheServiceApplicationTests {
 
     @Test
     void contextLoads() {
