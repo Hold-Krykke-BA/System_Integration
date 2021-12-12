@@ -18,7 +18,7 @@ Initialized with:
 - Netflix Eureka Discovery Client
 
 Later, the following was added:
-- todo
+- Spring Kafka
 
 External SOAP API was manually discovered through [Postman](https://documenter.getpostman.com/view/8854915/Szf26WHn#58604e5a-7631-43dc-8ed4-904f4223d59b).  
 The API and its WSDL file is hosted [here](http://webservices.daehosting.com/services/isbnservice.wso) and is fetched remotely on project build execution.
@@ -29,3 +29,6 @@ Add a 'web service' as framework support to the project using the WSDL link abov
 ### Setup
 1. Build and run
 2. Try out the REST API at `http://localhost:9004/isbn/87-01-32671-6`
+
+Ensure you run one of the later JDKs to work properly with the MongoDB connector.  
+I noticed issues at JDK version <=13, the application simply couldn't establish connection.
