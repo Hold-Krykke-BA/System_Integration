@@ -1,44 +1,32 @@
 package holdkrykke.registersaleservice.controllers;
 import com.mongodb.MongoException;
 import holdkrykke.registersaleservice.models.Order;
+import holdkrykke.registersaleservice.models.OrderItem;
 import holdkrykke.registersaleservice.repositories.OrderRepository;
 import holdkrykke.registersaleservice.services.kafka.ProducerService;
-import holdkrykke.registersaleservice.services.kafka.ProducerServiceCallBack;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-//@Value("${kafka.topic.requestreply-topic}")
+
 @RestController
 @RequestMapping("/kafka")
-public class KafkaOrderController
-{
-    // Option 1:
+public class KafkaOrderController {
+
     @Autowired
     private ProducerService service;
 
-    @PostMapping(value = "/message/{message}")
-    public String sendMyMessageToKafka(@PathVariable("message") String message)
-    {
-        service.sendMessage(message);
-        return "Message published: " + message;
-    }
-
-    // Option 2: Sending message with an async callback
-    @Autowired
-    private ProducerServiceCallBack serviceCallBack;
-
-    @PostMapping(value = "/message/callback/{message}")
-    public String sendMyMessageCallBack(@PathVariable("message") String message)
-    {
-        serviceCallBack.sendMessageCallBack(message);
-        return "Message published: " + message;
-    }
-
     @Autowired
     private OrderRepository orderRepository;
+
+    @Value("${topic.name.processing}")
+    String processingTopic;
+
+    @Value("${topic.name.caching}")
+    String cachingTopic;
 
     @GetMapping("")
     public List<Order> getAllOrders(){
@@ -46,16 +34,51 @@ public class KafkaOrderController
     }
 
     @PostMapping("/register")
-    public Order createOrder(@RequestBody Order order) {
+    public List<Order> createOrder(@RequestBody Order order) {
         try {
-            Order saved = orderRepository.save(order);
-            service.sendMessage(saved.toString());
-            return saved;
+            List<Order> orderList = checkOrder(order);
+            List<Order> savedOrderList = new ArrayList<>();
+            for(Order _order: orderList){
+                Order saved = orderRepository.save(_order);
+                savedOrderList.add(saved);
+                service.sendSaleRegistered(processingTopic,saved.toString());
+                service.sendSaleRegistered(cachingTopic,saved.toString());
+            }
+            return savedOrderList;
         } catch (MongoException ex) {
             // throw custom exception
             throw ex;
         }
     }
 
+    private List<Order> checkOrder(Order order){
+        System.out.println(order.getOrderItems().getClass());
+        List<Order> orderList = new ArrayList<>();
+        List<OrderItem> itemsDigital = new ArrayList<>();
+        List<OrderItem> itemsPhysical = new ArrayList<>();
+
+        for(OrderItem item : order.getOrderItems()){
+            if (item.getIsDigital()){
+                itemsDigital.add(item);
+            }
+            else{
+                itemsPhysical.add(item);
+            }
+        }
+        if (!itemsDigital.isEmpty() && !itemsPhysical.isEmpty()) {
+            Order orderDigital = new Order(order);
+            orderDigital.setOrderItems(itemsDigital);
+            orderDigital.setOrderNumber(order.getOrderNumber()+"a");
+            orderList.add(orderDigital);
+
+            Order orderPhysical = new Order(order);
+            orderPhysical.setOrderNumber(order.getOrderNumber()+"b");
+            orderPhysical.setOrderItems(itemsPhysical);
+            orderList.add(orderPhysical);
+        }else{
+            orderList.add(order);
+        }
+        return orderList;
+    }
 
 }
