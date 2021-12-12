@@ -3,8 +3,9 @@ import com.mongodb.MongoException;
 import holdkrykke.registersaleservice.models.Order;
 import holdkrykke.registersaleservice.repositories.OrderRepository;
 import holdkrykke.registersaleservice.services.kafka.ProducerService;
-import holdkrykke.registersaleservice.services.kafka.ProducerServiceCallBack;
+//import holdkrykke.registersaleservice.services.kafka.ProducerServiceCallBack;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,11 @@ public class KafkaOrderController {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Value("${topic.name.processing}")
+    String processingTopic;
+
+    @Value("${topic.name.caching}")
+    String cachingTopic;
     @GetMapping("")
     public List<Order> getAllOrders(){
         return orderRepository.findAll();
@@ -30,7 +36,8 @@ public class KafkaOrderController {
     public Order createOrder(@RequestBody Order order) {
         try {
             Order saved = orderRepository.save(order);
-            service.sendMessage(saved.toString());
+            service.sendSaleRegisteredOnProcessingTopic(processingTopic,saved.toString());
+            service.sendSaleRegisteredOnProcessingTopic(cachingTopic,saved.toString());
             return saved;
         } catch (MongoException ex) {
             // throw custom exception
