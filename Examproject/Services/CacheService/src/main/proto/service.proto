@@ -1,0 +1,19 @@
+syntax = "proto3";
+package holdkrykke.cacheservice.services;
+option java_multiple_files = true;
+
+// Define the service components and attributes
+message RegisterRequest {
+  string isbn = 1;
+  string authors = 2;
+  string title = 3;
+}
+
+message ProtoResponse {
+  string retrieved = 1;
+}
+
+// Define service contract
+service RegisterService {
+  rpc register(RegisterRequest) returns (ProtoResponse);
+}
