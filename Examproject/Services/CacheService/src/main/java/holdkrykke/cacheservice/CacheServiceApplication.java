@@ -7,8 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import java.io.IOException;
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
+
 
 @SpringBootApplication
 @EnableRedisRepositories
