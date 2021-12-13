@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * The Order DTO from the RegisterSale service
  */
-public class Order {
+public class Order implements Serializable {
     @Id
     private String id;
     private String orderNumber;

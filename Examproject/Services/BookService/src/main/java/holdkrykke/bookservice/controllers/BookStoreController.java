@@ -22,7 +22,7 @@ public class BookStoreController {
     @Produces(MediaType.APPLICATION_JSON_VALUE)
     @Consumes(MediaType.APPLICATION_JSON_VALUE)
     public Book addBook(Book book) { //may need to use a BookDTO instead
-        if (book == null || !(book instanceof Book)) {
+        if (book == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not parse book");
         }
         return repo.save(book);
