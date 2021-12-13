@@ -3,18 +3,17 @@ package holdkrykke.cacheservice.services;
 option java_multiple_files = true;
 
 // Define the service components and attributes
-message RegisterStudypointsRequest {
-  string studentID = 1;
-  string assignmentID = 2;
-  string assignmentCompleted = 3;
-  string reviewCompleted = 4;
+message RegisterRequest {
+  string isbn = 1;
+  string authors = 2;
+  string title = 3;
 }
 
-message StudypointResponse {
-  string archivedInfo = 1;
+message ProtoResponse {
+  string retrieved = 1;
 }
 
 // Define service contract
 service RegisterService {
-  rpc register(RegisterStudypointsRequest) returns (StudypointResponse);
+  rpc register(RegisterRequest) returns (ProtoResponse);
 }

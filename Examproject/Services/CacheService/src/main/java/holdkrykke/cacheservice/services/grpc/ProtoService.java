@@ -1,8 +1,8 @@
 package holdkrykke.cacheservice.services.grpc;
 
 import holdkrykke.cacheservice.services.RegisterServiceGrpc;
-import holdkrykke.cacheservice.services.RegisterStudypointsRequest;
-import holdkrykke.cacheservice.services.StudypointResponse;
+import holdkrykke.cacheservice.services.RegisterRequest;
+import holdkrykke.cacheservice.services.ProtoResponse;
 import io.grpc.stub.StreamObserver;
 
 import java.io.File;
@@ -13,15 +13,15 @@ import java.io.PrintWriter;
 public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase{
 
     @Override
-    public void register(RegisterStudypointsRequest request, StreamObserver<StudypointResponse> responseObserver) {
+    public void register(RegisterRequest request, StreamObserver<ProtoResponse> responseObserver) {
         System.out.println("Request received from client:\n" + request);
 
-//        String archivedInfo = archiveData(request) + " studypoints assigned to " + request.getStudentID();
-//        StudypointResponse response = StudypointResponse.newBuilder()
-//                .setArchivedInfo(archivedInfo)
-//                .build();
+        String retrieved = "am a hat"; // set response to bloom
+        ProtoResponse response = ProtoResponse.newBuilder()
+                .setRetrieved(retrieved)
+                .build();
 
-//        responseObserver.onNext(response);
+        responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
 }
