@@ -5,7 +5,7 @@ option java_multiple_files = true;
 // Define the service components and attributes
 message RegisterRequest {
   string isbn = 1;
-  string authors = 2;
+  repeated string authors = 2;
   string title = 3;
 }
 
