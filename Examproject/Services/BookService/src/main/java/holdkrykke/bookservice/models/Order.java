@@ -1,4 +1,4 @@
-package holdkrykke.registersaleservice.models;
+package holdkrykke.bookservice.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +11,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
+/**
+ * The Order DTO from the RegisterSale service
+ */
 public class Order implements Serializable {
     @Id
     private String id;
@@ -23,7 +27,7 @@ public class Order implements Serializable {
     private Double totalPrice;
     private List<OrderItem> orderItems;
 
-    public Order (Order order){
+    public Order(Order order) {
         this.id = order.id;
         this.orderNumber = order.getOrderNumber();
         this.orderStatus = order.getOrderStatus();

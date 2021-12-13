@@ -13,9 +13,17 @@ public class ProducerService {
     private static final Logger logger = LoggerFactory.getLogger(ProducerService.class);
 
     @Autowired
-    private KafkaTemplate<String, String> template;
+    private KafkaTemplate<String, Object> template;
 
     public void sendSaleRegistered(String topic, String message) {
+        template.send(topic, message);
+        logger.info("Producer sends on topic [{} {}]", topic, message);
+        template.flush();
+    }
+
+
+    public void sendSaleRegistered(String topic, Order message) {
+
         template.send(topic, message);
         logger.info("Producer sends on topic [{} {}]", topic, message);
         template.flush();
