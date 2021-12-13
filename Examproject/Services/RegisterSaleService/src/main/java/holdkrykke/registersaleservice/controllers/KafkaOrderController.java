@@ -42,7 +42,7 @@ public class KafkaOrderController {
                 Order saved = orderRepository.save(_order);
                 savedOrderList.add(saved);
                 service.sendSaleRegistered(processingTopic,saved.toString());
-                service.sendSaleRegistered(cachingTopic,saved.toString());
+                service.sendSaleRegistered(cachingTopic, saved);
             }
             return savedOrderList;
         } catch (MongoException ex) {
