@@ -5,6 +5,8 @@ import holdkrykke.cacheservice.services.RegisterRequest;
 import holdkrykke.cacheservice.services.ProtoResponse;
 import io.grpc.stub.StreamObserver;
 
+import java.util.List;
+
 public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase{
 
     @Override
@@ -22,7 +24,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase{
 
     private String handleRequest(RegisterRequest request){
         String parameterISBN = request.getIsbn();
-        String parameterAUTHORS = request.getAuthors();
+        List<String> parameterAUTHORS = request.getAuthorsList();
         String parameterTITLE = request.getTitle();
         return "am a hat"; // response object/list as stringified
     }

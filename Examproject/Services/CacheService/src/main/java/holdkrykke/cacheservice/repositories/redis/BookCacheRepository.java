@@ -28,7 +28,7 @@ public class BookCacheRepository {
      */
     public void saveBook(BookCacheDTO book) {
         redisTemplate.opsForValue().set(
-                book.getId(), book, _CACHE_DURATION, _UNIT
+                book.getIsbn(), book, _CACHE_DURATION, _UNIT
         );
     }
 
@@ -50,7 +50,7 @@ public class BookCacheRepository {
     /**
      * Finds a book by ID and refreshes its token to the default.
      *
-     * @param id id of the book
+     * @param id isbn of the book
      * @return Book if found, otherwise null
      * @throws NotFoundException if unable to set expiration.
      */
@@ -72,7 +72,4 @@ public class BookCacheRepository {
         return book;
     }
 }
-//todo
-// Expire key when changed in other part of system, i.e. when a sale has been made
-//  ^ would require a connection between Book Service & Caching service + rest endpoints. Probably not gonna happen.
-// Get many (if necessary)
+

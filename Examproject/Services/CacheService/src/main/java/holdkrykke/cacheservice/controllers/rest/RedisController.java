@@ -27,7 +27,7 @@ public class RedisController {
 
     @GetMapping("/")
     public boolean addNew() {
-        repo.saveBook(new BookCacheDTO("1234", "external", 5));
+        //todo actually add from POST
         return true;
     }
 
@@ -35,6 +35,7 @@ public class RedisController {
     public BookCacheDTO getCacheItem() {
         BookCacheDTO result = null;
         try {
+            //todo actually get from ID param
             result = repo.findBookById("1234");
         } catch (NotFoundException e) {
             e.printStackTrace();

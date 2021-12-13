@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
+import java.util.List;
 
 @RestController
 @RequestMapping("/books")
@@ -21,10 +22,16 @@ public class BookStoreController {
     @PostMapping("/")
     @Produces(MediaType.APPLICATION_JSON_VALUE)
     @Consumes(MediaType.APPLICATION_JSON_VALUE)
-    public Book addBook(Book book) { //may need to use a BookDTO instead
+    public Book addBook(@RequestBody Book book) { //may need to use a BookDTO instead
         if (book == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not parse book");
         }
         return repo.save(book);
+    }
+
+    @GetMapping("/")
+    @Produces(MediaType.APPLICATION_JSON_VALUE)
+    public List<Book> getAllBooks() {
+        return repo.findAll();
     }
 }
