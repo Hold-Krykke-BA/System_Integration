@@ -4,14 +4,11 @@ import holdkrykke.cacheservice.models.Book.Book;
 import holdkrykke.cacheservice.repositories.mongo.BookRepository;
 import holdkrykke.cacheservice.services.external.ExternalService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController()
+@RestController
 @RequestMapping("/external")
 public class ExternalController {
     @Autowired
@@ -25,9 +22,9 @@ public class ExternalController {
         return externalService.getBooksByISBN(isbn);
     }
 
-    @GetMapping("/getBooksByAuthors/{authors}") // "j k rowling, William Taylor Adams"
-    public String getBooksByAuthor(@PathVariable String authors) {
-        return externalService.getBooksByAuthor(authors);
+    @PostMapping("/getBooksByAuthors/") // ["j k rowling", "William Taylor Adams"]
+    public String getBooksByAuthor(@RequestBody String[] authors) {
+        return externalService.getBooksByAuthor(List.of(authors));
     }
 
     @GetMapping("/getBooksByTitle/{title}") // "wool"
