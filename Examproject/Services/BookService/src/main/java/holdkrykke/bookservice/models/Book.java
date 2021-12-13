@@ -13,17 +13,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "books")
 public class Book {
     @Id
-    private String _id;
-    private String ISBN;
+    private String isbn;
     private String title;
-    private String authors;
-    private String edition;
-    private String subject;
+    private String[] authors;
+    private String[] subjects;
     private String location;
     private String language;
     private int pages;
     private int year;
     private int quantity;
-    private Boolean isDigital;
+    private String type; // ebook, audiobook, book
     private Double price;
 }
