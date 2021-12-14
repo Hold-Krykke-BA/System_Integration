@@ -8,9 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class ConsumerService {
@@ -23,7 +26,25 @@ public class ConsumerService {
     private RuntimeService runtimeService;
 
     @KafkaListener(topics = "saleregisteredprocessing", groupId = "salegroup")
-    public void consume(String message) throws IOException {
+    public void consume(@Payload String message) throws IOException {
+        System.out.println("Consumed message (OrderNumber):" + message);
+        System.out.println("is message equal to ordernumber? "+ "wef".equals(message));
+        Order retrievedOrder = null; // orderRepository.findByOrderNumber(message);
+        //System.out.println("Order from mongo: " + retrievedOrder);
+
+        CompletableFuture<Order> completableFuture = CompletableFuture.supplyAsync(() -> orderRepository.findByOrderNumber(message));
+        while (!completableFuture.isDone()) {
+
+        }
+        try {
+            retrievedOrder = completableFuture.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Order from mongo: " + retrievedOrder);
+
         System.out.println("Consumed message:" + message);
         List<Order> retrieved = orderRepository.findByOrderStatus("registered");
         for(Order order: retrieved){

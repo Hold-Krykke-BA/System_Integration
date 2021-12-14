@@ -41,7 +41,7 @@ public class KafkaOrderController {
             for(Order _order: orderList){
                 Order saved = orderRepository.save(_order);
                 savedOrderList.add(saved);
-                service.sendSaleRegistered(processingTopic,saved.toString());
+                service.sendSaleRegistered(processingTopic,saved.getOrderNumber());
                 service.sendSaleRegistered(cachingTopic, saved);
             }
             return savedOrderList;
