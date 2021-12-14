@@ -8,6 +8,7 @@ import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration.JedisClientConfigurationBuilder;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
@@ -36,6 +37,8 @@ public class RedisConfig {
     public RedisTemplate<String, BookCacheDTO> redisTemplate() {
         RedisTemplate<String, BookCacheDTO> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
+        template.setKeySerializer(new StringRedisSerializer()); //Serialize as actual String key in the database, rather than <JavaObject><Key>
+
         return template;
     }
 }

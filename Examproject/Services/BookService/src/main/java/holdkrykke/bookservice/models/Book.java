@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "book")
 public class Book {
     @Id
+    private String id;
     private String isbn;
     private String title;
     private String[] authors;

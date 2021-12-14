@@ -4,44 +4,43 @@ import holdkrykke.cacheservice.exceptions.NotFoundException;
 import holdkrykke.cacheservice.models.redis.BookCacheDTO;
 import holdkrykke.cacheservice.repositories.redis.BookCacheRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController()
 @RequestMapping("/cache")
-/**
- * This is purely for testing. The cache should not be available outside gRPC which calls it internally.
- *
- * To test, run app, and add a new predefined entry:
- * http://localhost:9005/cache/
- * Then get it by the following endpoint, and notice how the TTL changes
- * http://localhost:9005/cache/get
- *
- * todo delete
- */
 public class RedisController {
 
     @Autowired
     private BookCacheRepository repo;
 
     @GetMapping("/")
-    public boolean addNew() {
-        //todo actually add from POST
-        return true;
+    public List<BookCacheDTO> getCache() {
+        return repo.getCache();
     }
 
-    @GetMapping("/get")
-    public BookCacheDTO getCacheItem() {
+    @PostMapping("/")
+    public boolean addCacheItem(@RequestBody BookCacheDTO book) {
+        try {
+            repo.saveBook(book);
+            return true;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @GetMapping("/{isbn}")
+    public BookCacheDTO getCacheItem(@PathVariable String isbn) {
         BookCacheDTO result = null;
         try {
-            //todo actually get from ID param
-            result = repo.findBookById("1234");
+            result = repo.findBookByIdAndRefreshExpiration(isbn);
         } catch (NotFoundException e) {
-            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         System.out.println("Result: " + result);
         return result;
     }
-
 }
