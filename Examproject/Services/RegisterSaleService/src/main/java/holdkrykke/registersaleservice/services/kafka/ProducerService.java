@@ -1,6 +1,7 @@
 package holdkrykke.registersaleservice.services.kafka;
 
 import holdkrykke.registersaleservice.models.Order;
+import holdkrykke.registersaleservice.models.OrderNumberDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ public class ProducerService {
     @Autowired
     private KafkaTemplate<String, Object> template;
 
-    public void sendSaleRegistered(String topic, String message) {
+    public void sendSaleRegistered(String topic, OrderNumberDTO message) {
         template.send(topic, message);
         logger.info("Producer sends on topic [{} {}]", topic, message);
         template.flush();

@@ -1,6 +1,7 @@
 package holdkrykke.processsaleservice.services.kafka;
 
 import holdkrykke.processsaleservice.models.Order;
+import holdkrykke.processsaleservice.models.OrderNumberDTO;
 import holdkrykke.processsaleservice.repositories.OrderRepository;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.variable.Variables;
@@ -8,12 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Service;
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class ConsumerService {
@@ -26,32 +23,15 @@ public class ConsumerService {
     private RuntimeService runtimeService;
 
     @KafkaListener(topics = "saleregisteredprocessing", groupId = "salegroup")
-    public void consume(@Payload String message) throws IOException {
-        System.out.println("Consumed message (OrderNumber):" + message);
-        System.out.println("is message equal to ordernumber? "+ "wef".equals(message));
-        Order retrievedOrder = null; // orderRepository.findByOrderNumber(message);
-        //System.out.println("Order from mongo: " + retrievedOrder);
-
-        CompletableFuture<Order> completableFuture = CompletableFuture.supplyAsync(() -> orderRepository.findByOrderNumber(message));
-        while (!completableFuture.isDone()) {
-
-        }
-        try {
-            retrievedOrder = completableFuture.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Order from mongo: " + retrievedOrder);
-
-        System.out.println("Consumed message:" + message);
-        List<Order> retrieved = orderRepository.findByOrderStatus("registered");
-        for(Order order: retrieved){
-            System.out.println("Received order: " + order.getId() + ", with order status: " + order.getOrderStatus());
+    public void consume(GenericMessage<OrderNumberDTO>  message) {
+        logger.info("Consumed message [{}]", message);
+        Order retrievedOrder = orderRepository.findByOrderNumber(message.getPayload().getOrderNumber());
+        logger.info("Retrieved Order [{}]", retrievedOrder);
+        if (retrievedOrder.getOrderStatus().equals("registered")){
+            logger.info("Started Camunda Process with order [{}]", retrievedOrder);
             runtimeService.startProcessInstanceByKey("orderProcessing",Variables.createVariables()
-                    .putValueTyped("order", Variables.objectValue(order).serializationDataFormat(Variables.SerializationDataFormats.JSON).create())
-                    .putValue("orderType", order.getOrderType())
+                    .putValueTyped("order", Variables.objectValue(retrievedOrder).serializationDataFormat(Variables.SerializationDataFormats.JSON).create())
+                    .putValue("orderType", retrievedOrder.getOrderType())
             );
         }
     }

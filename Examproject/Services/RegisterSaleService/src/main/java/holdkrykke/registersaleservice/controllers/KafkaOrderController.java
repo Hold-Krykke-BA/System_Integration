@@ -2,8 +2,11 @@ package holdkrykke.registersaleservice.controllers;
 import com.mongodb.MongoException;
 import holdkrykke.registersaleservice.models.Order;
 import holdkrykke.registersaleservice.models.OrderItem;
+import holdkrykke.registersaleservice.models.OrderNumberDTO;
 import holdkrykke.registersaleservice.repositories.OrderRepository;
 import holdkrykke.registersaleservice.services.kafka.ProducerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/kafka")
 public class KafkaOrderController {
+    private static final Logger logger = LoggerFactory.getLogger(KafkaOrderController.class);
 
     @Autowired
     private ProducerService service;
@@ -41,43 +45,42 @@ public class KafkaOrderController {
             for(Order _order: orderList){
                 Order saved = orderRepository.save(_order);
                 savedOrderList.add(saved);
-                service.sendSaleRegistered(processingTopic,saved.getOrderNumber());
+                service.sendSaleRegistered(processingTopic, new OrderNumberDTO(saved));
                 service.sendSaleRegistered(cachingTopic, saved);
             }
             return savedOrderList;
         } catch (MongoException ex) {
-            // throw custom exception
-            throw ex;
+            logger.error("/register: MongoException caught [{}]", ex.getMessage());
         }
     }
 
     private List<Order> checkOrder(Order order){
-        System.out.println(order.getOrderItems().getClass());
+//        System.out.println(order.getOrderItems().getClass());
         List<Order> orderList = new ArrayList<>();
-        List<OrderItem> itemsDigital = new ArrayList<>();
-        List<OrderItem> itemsPhysical = new ArrayList<>();
-
-        for(OrderItem item : order.getOrderItems()){
-            if (item.getIsDigital()){
-                itemsDigital.add(item);
-            }
-            else{
-                itemsPhysical.add(item);
-            }
-        }
-        if (!itemsDigital.isEmpty() && !itemsPhysical.isEmpty()) {
-            Order orderDigital = new Order(order);
-            orderDigital.setOrderItems(itemsDigital);
-            orderDigital.setOrderNumber(order.getOrderNumber()+"a");
-            orderList.add(orderDigital);
-
-            Order orderPhysical = new Order(order);
-            orderPhysical.setOrderNumber(order.getOrderNumber()+"b");
-            orderPhysical.setOrderItems(itemsPhysical);
-            orderList.add(orderPhysical);
-        }else{
+//        List<OrderItem> itemsDigital = new ArrayList<>();
+//        List<OrderItem> itemsPhysical = new ArrayList<>();
+//
+//        for(OrderItem item : order.getOrderItems()){
+//            if (item.getIsDigital()){
+//                itemsDigital.add(item);
+//            }
+//            else{
+//                itemsPhysical.add(item);
+//            }
+//        }
+//        if (!itemsDigital.isEmpty() && !itemsPhysical.isEmpty()) {
+//            Order orderDigital = new Order(order);
+//            orderDigital.setOrderItems(itemsDigital);
+//            orderDigital.setOrderNumber(order.getOrderNumber()+"a");
+//            orderList.add(orderDigital);
+//
+//            Order orderPhysical = new Order(order);
+//            orderPhysical.setOrderNumber(order.getOrderNumber()+"b");
+//            orderPhysical.setOrderItems(itemsPhysical);
+//            orderList.add(orderPhysical);
+//        }else{
             orderList.add(order);
-        }
+//        }
         return orderList;
     }
 
