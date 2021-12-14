@@ -1,6 +1,8 @@
 package holdkrykke.processsaleservice.services.kafka;
 
+import holdkrykke.processsaleservice.exceptions.ProcessSaleException;
 import holdkrykke.processsaleservice.models.Order;
+import holdkrykke.processsaleservice.models.OrderNumberDTO;
 import holdkrykke.processsaleservice.repositories.OrderRepository;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.variable.Variables;
@@ -8,9 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Service;
-import java.io.IOException;
-import java.util.List;
 
 @Service
 public class ConsumerService {
@@ -23,15 +24,21 @@ public class ConsumerService {
     private RuntimeService runtimeService;
 
     @KafkaListener(topics = "saleregisteredprocessing", groupId = "salegroup")
-    public void consume(String message) throws IOException {
-        System.out.println("Consumed message:" + message);
-        List<Order> retrieved = orderRepository.findByOrderStatus("registered");
-        for(Order order: retrieved){
-            System.out.println("Received order: " + order.getId() + ", with order status: " + order.getOrderStatus());
-            runtimeService.startProcessInstanceByKey("orderProcessing",Variables.createVariables()
-                    .putValueTyped("order", Variables.objectValue(order).serializationDataFormat(Variables.SerializationDataFormats.JSON).create())
-                    .putValue("orderType", order.getOrderType())
-            );
+    public void consume(GenericMessage<OrderNumberDTO>  message) throws ProcessSaleException {
+        try {
+            logger.info("Consumed message [{}]", message);
+            Order retrievedOrder = orderRepository.findByOrderNumber(message.getPayload().getOrderNumber());
+            logger.info("Retrieved Order [{}]", retrievedOrder);
+            if (retrievedOrder.getOrderStatus().equals("registered")) {
+                logger.info("Started Camunda Process with order [{}]", retrievedOrder);
+                runtimeService.startProcessInstanceByKey("orderProcessing", Variables.createVariables()
+                        .putValueTyped("order", Variables.objectValue(retrievedOrder).serializationDataFormat(Variables.SerializationDataFormats.JSON).create())
+                        .putValue("orderType", retrievedOrder.getOrderType())
+                );
+            }
+        } catch (Exception ex){
+            logger.error("ConsumerService [{}]", ex.getMessage());
+            throw new ProcessSaleException(ex.getMessage());
         }
     }
 }

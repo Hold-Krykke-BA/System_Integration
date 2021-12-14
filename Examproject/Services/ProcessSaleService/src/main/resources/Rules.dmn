@@ -32,6 +32,14 @@
           <text>true</text>
         </outputEntry>
       </rule>
+      <rule id="DecisionRule_066o6qz">
+        <inputEntry id="UnaryTests_1hb3i1w">
+          <text>"ebook/audiobook"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0q08rfa">
+          <text>true</text>
+        </outputEntry>
+      </rule>
     </decisionTable>
   </decision>
   <dmndi:DMNDI>
