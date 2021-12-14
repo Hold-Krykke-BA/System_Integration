@@ -52,36 +52,71 @@ public class KafkaOrderController {
         } catch (MongoException ex) {
             logger.error("/register: MongoException caught [{}]", ex.getMessage());
         }
+        return null; // throw error
     }
 
     private List<Order> checkOrder(Order order){
-//        System.out.println(order.getOrderItems().getClass());
         List<Order> orderList = new ArrayList<>();
-//        List<OrderItem> itemsDigital = new ArrayList<>();
-//        List<OrderItem> itemsPhysical = new ArrayList<>();
-//
-//        for(OrderItem item : order.getOrderItems()){
-//            if (item.getIsDigital()){
-//                itemsDigital.add(item);
-//            }
-//            else{
-//                itemsPhysical.add(item);
-//            }
-//        }
-//        if (!itemsDigital.isEmpty() && !itemsPhysical.isEmpty()) {
-//            Order orderDigital = new Order(order);
-//            orderDigital.setOrderItems(itemsDigital);
-//            orderDigital.setOrderNumber(order.getOrderNumber()+"a");
-//            orderList.add(orderDigital);
-//
-//            Order orderPhysical = new Order(order);
-//            orderPhysical.setOrderNumber(order.getOrderNumber()+"b");
-//            orderPhysical.setOrderItems(itemsPhysical);
-//            orderList.add(orderPhysical);
-//        }else{
+        List<OrderItem> itemsDigital = new ArrayList<>();
+        List<OrderItem> itemsPhysical = new ArrayList<>();
+
+        for(OrderItem item : order.getOrderItems()){
+            if (item.getType().equals("ebook") || item.getType().equals("audiobook")){
+                itemsDigital.add(item);
+            }
+            else{
+                itemsPhysical.add(item);
+            }
+        }
+        if (!itemsDigital.isEmpty() && !itemsPhysical.isEmpty()) {
+            Order orderDigital = new Order(order);
+            orderDigital.setOrderItems(itemsDigital);
+            orderDigital.setOrderType(getOrderType(itemsDigital));
+            orderDigital.setOrderNumber(order.getOrderNumber()+"a");
+            orderList.add(orderDigital);
+
+            Order orderPhysical = new Order(order);
+            orderPhysical.setOrderNumber(order.getOrderNumber()+"b");
+            orderPhysical.setOrderType(getOrderType(itemsPhysical));
+            orderPhysical.setOrderItems(itemsPhysical);
+            orderList.add(orderPhysical);
+        }else{
+            order.setOrderType(getOrderType(order.getOrderItems()));
             orderList.add(order);
-//        }
+        }
+        updateOrderPrice(orderList);
         return orderList;
     }
+
+    private String getOrderType(List<OrderItem> items) {
+        // tjek på 2 boolean
+        boolean ebook = false;
+        boolean audiobook = false;
+        boolean book = false;
+
+        for(OrderItem item : items){
+            if (item.getType().equals("ebook")) ebook = true;
+            if (item.getType().equals("audiobook")) audiobook = true;
+            if (item.getType().equals("book")) book = true;
+        }
+        if (book) return "book";
+        if (audiobook && ebook) return "ebook/audiobook";
+        if (audiobook) return "audiobook";
+        if (ebook) return "ebook";
+
+        return ""; // throw error
+    }
+
+    private void updateOrderPrice(List<Order> orderList) {
+        for (Order order : orderList){
+            Double temp = 0.0;
+            for(OrderItem item : order.getOrderItems()){
+                temp = temp + item.getPrice();
+            }
+            order.setTotalPrice(temp);
+        }
+    }
+
+
 
 }
