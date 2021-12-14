@@ -1,5 +1,6 @@
 package holdkrykke.processsaleservice.services.kafka;
 
+import holdkrykke.processsaleservice.exceptions.ProcessSaleException;
 import holdkrykke.processsaleservice.models.Order;
 import holdkrykke.processsaleservice.models.OrderNumberDTO;
 import holdkrykke.processsaleservice.repositories.OrderRepository;
@@ -23,16 +24,21 @@ public class ConsumerService {
     private RuntimeService runtimeService;
 
     @KafkaListener(topics = "saleregisteredprocessing", groupId = "salegroup")
-    public void consume(GenericMessage<OrderNumberDTO>  message) {
-        logger.info("Consumed message [{}]", message);
-        Order retrievedOrder = orderRepository.findByOrderNumber(message.getPayload().getOrderNumber());
-        logger.info("Retrieved Order [{}]", retrievedOrder);
-        if (retrievedOrder.getOrderStatus().equals("registered")){
-            logger.info("Started Camunda Process with order [{}]", retrievedOrder);
-            runtimeService.startProcessInstanceByKey("orderProcessing",Variables.createVariables()
-                    .putValueTyped("order", Variables.objectValue(retrievedOrder).serializationDataFormat(Variables.SerializationDataFormats.JSON).create())
-                    .putValue("orderType", retrievedOrder.getOrderType())
-            );
+    public void consume(GenericMessage<OrderNumberDTO>  message) throws ProcessSaleException {
+        try {
+            logger.info("Consumed message [{}]", message);
+            Order retrievedOrder = orderRepository.findByOrderNumber(message.getPayload().getOrderNumber());
+            logger.info("Retrieved Order [{}]", retrievedOrder);
+            if (retrievedOrder.getOrderStatus().equals("registered")) {
+                logger.info("Started Camunda Process with order [{}]", retrievedOrder);
+                runtimeService.startProcessInstanceByKey("orderProcessing", Variables.createVariables()
+                        .putValueTyped("order", Variables.objectValue(retrievedOrder).serializationDataFormat(Variables.SerializationDataFormats.JSON).create())
+                        .putValue("orderType", retrievedOrder.getOrderType())
+                );
+            }
+        } catch (Exception ex){
+            logger.error("ConsumerService [{}]", ex.getMessage());
+            throw new ProcessSaleException(ex.getMessage());
         }
     }
 }

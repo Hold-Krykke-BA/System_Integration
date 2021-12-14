@@ -1,6 +1,7 @@
 package holdkrykke.processsaleservice.services.camunda;
 
 import com.mongodb.MongoException;
+import holdkrykke.processsaleservice.exceptions.ProcessSaleException;
 import holdkrykke.processsaleservice.models.Order;
 import holdkrykke.processsaleservice.repositories.OrderRepository;
 import holdkrykke.processsaleservice.services.mail.MailService;
@@ -32,9 +33,9 @@ public class ProcessPhysicalOrder implements JavaDelegate {
             logger.info("Physical order, orderStatus changed [{}]", updatedOrder.getOrderStatus());
             mailService.sendEmail(updatedOrder.getCustomerMail(), "Order confirmation: " + updatedOrder.getOrderNumber(),
                     mailService.createBody(updatedOrder));
-
         } catch (MongoException ex) {
             logger.error("Processing MongoException caught [{}]", ex.getMessage());
+            throw new ProcessSaleException(ex.getMessage());
         }
     }
 }

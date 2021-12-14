@@ -1,5 +1,6 @@
 package holdkrykke.registersaleservice.controllers;
 import com.mongodb.MongoException;
+import holdkrykke.registersaleservice.exceptions.RegisterSaleException;
 import holdkrykke.registersaleservice.models.Order;
 import holdkrykke.registersaleservice.models.OrderItem;
 import holdkrykke.registersaleservice.models.OrderNumberDTO;
@@ -38,7 +39,7 @@ public class KafkaOrderController {
     }
 
     @PostMapping("/register")
-    public List<Order> createOrder(@RequestBody Order order) {
+    public List<Order> createOrder(@RequestBody Order order) throws RegisterSaleException {
         try {
             List<Order> orderList = checkOrder(order);
             List<Order> savedOrderList = new ArrayList<>();
@@ -51,11 +52,11 @@ public class KafkaOrderController {
             return savedOrderList;
         } catch (MongoException ex) {
             logger.error("/register: MongoException caught [{}]", ex.getMessage());
+            throw new RegisterSaleException(ex.getMessage());
         }
-        return null; // throw error
     }
 
-    private List<Order> checkOrder(Order order){
+    private List<Order> checkOrder(Order order) throws RegisterSaleException {
         List<Order> orderList = new ArrayList<>();
         List<OrderItem> itemsDigital = new ArrayList<>();
         List<OrderItem> itemsPhysical = new ArrayList<>();
@@ -88,7 +89,7 @@ public class KafkaOrderController {
         return orderList;
     }
 
-    private String getOrderType(List<OrderItem> items) {
+    private String getOrderType(List<OrderItem> items) throws RegisterSaleException {
         // tjek på 2 boolean
         boolean ebook = false;
         boolean audiobook = false;
@@ -104,7 +105,7 @@ public class KafkaOrderController {
         if (audiobook) return "audiobook";
         if (ebook) return "ebook";
 
-        return ""; // throw error
+        throw new RegisterSaleException("OrderItem.getType() not valid");
     }
 
     private void updateOrderPrice(List<Order> orderList) {

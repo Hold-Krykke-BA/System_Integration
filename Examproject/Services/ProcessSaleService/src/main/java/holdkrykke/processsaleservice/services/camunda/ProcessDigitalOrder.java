@@ -1,9 +1,9 @@
 package holdkrykke.processsaleservice.services.camunda;
 
 import com.mongodb.MongoException;
+import holdkrykke.processsaleservice.exceptions.ProcessSaleException;
 import holdkrykke.processsaleservice.models.Order;
 import holdkrykke.processsaleservice.repositories.OrderRepository;
-import holdkrykke.processsaleservice.services.kafka.ConsumerService;
 import holdkrykke.processsaleservice.services.mail.MailService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -35,6 +35,7 @@ public class ProcessDigitalOrder implements JavaDelegate {
                     mailService.createBody(updatedOrder));
         } catch (MongoException ex) {
             logger.error("Processing MongoException caught [{}]", ex.getMessage());
+            throw new ProcessSaleException(ex.getMessage());
         }
     }
 }
