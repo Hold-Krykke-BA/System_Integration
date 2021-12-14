@@ -1,11 +1,9 @@
-package holdkrykke.cacheservice.controllers.grpc;
+package holdkrykke.cacheservice.controllers.rest;
 
 import holdkrykke.cacheservice.exceptions.NotFoundException;
 import holdkrykke.cacheservice.models.redis.BookCacheDTO;
 import holdkrykke.cacheservice.repositories.redis.BookCacheRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +27,7 @@ public class RedisController {
 
     @GetMapping("/")
     public boolean addNew() {
-        repo.saveBook(new BookCacheDTO("1234", "external", 5));
+        //todo actually add from POST
         return true;
     }
 
@@ -37,6 +35,7 @@ public class RedisController {
     public BookCacheDTO getCacheItem() {
         BookCacheDTO result = null;
         try {
+            //todo actually get from ID param
             result = repo.findBookById("1234");
         } catch (NotFoundException e) {
             e.printStackTrace();

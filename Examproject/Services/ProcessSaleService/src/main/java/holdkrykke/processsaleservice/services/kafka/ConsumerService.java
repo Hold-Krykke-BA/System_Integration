@@ -22,7 +22,7 @@ public class ConsumerService {
     @Autowired
     private RuntimeService runtimeService;
 
-    @KafkaListener(topics = "saleregistered", groupId = "salegroup")
+    @KafkaListener(topics = "saleregisteredprocessing", groupId = "salegroup")
     public void consume(String message) throws IOException {
         System.out.println("Consumed message:" + message);
         List<Order> retrieved = orderRepository.findByOrderStatus("registered");

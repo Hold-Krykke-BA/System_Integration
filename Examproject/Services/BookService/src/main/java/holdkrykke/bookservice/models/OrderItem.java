@@ -1,24 +1,22 @@
-package holdkrykke.registersaleservice.models;
+package holdkrykke.bookservice.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * The OrderItem DTO from the RegisterSale service
+ */
 public class OrderItem implements Serializable {
     private String isbn;
     private String title;
-    private String authors;
-    private String edition;
-    private int pages;
-    private int year;
-    private Boolean isDigital;
+    private String[] authors;
+    private String location;
+    private String type; // ebook, audiobook, book
     private Double price;
-
 }
