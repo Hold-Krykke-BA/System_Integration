@@ -3,9 +3,14 @@ package holdkrykke.cacheservice.repositories.redis;
 import holdkrykke.cacheservice.exceptions.NotFoundException;
 import holdkrykke.cacheservice.models.redis.BookCacheDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -20,6 +25,41 @@ public class BookCacheRepository {
     @Autowired
     RedisTemplate<String, BookCacheDTO> redisTemplate;
 
+
+    /**
+     * Get current contents of the cache
+     * <p>
+     * Internally, it gets all keys using SCAN, and then multiGets on the keys.
+     *
+     * @return a list of cache items
+     */
+    public List<BookCacheDTO> getCache() {
+        var keys = getKeys();
+        return redisTemplate.opsForValue().multiGet(keys);
+    }
+
+    /**
+     * Private method to get all available keys from cache
+     *
+     * @return
+     */
+    private List<String> getKeys() {
+        List<String> keys = new ArrayList<>();
+        RedisConnection redisConnection = null;
+        try {
+            redisConnection = redisTemplate.getConnectionFactory().getConnection();
+            ScanOptions options = ScanOptions.scanOptions().match("*").count(100).build();
+
+            Cursor c = redisConnection.scan(options);
+            while (c.hasNext()) {
+                var result = new String((byte[]) c.next());
+                keys.add(result);
+            }
+        } finally {
+            redisConnection.close(); //Ensure closing this connection.
+        }
+        return keys;
+    }
 
     /**
      * Save a book to the redis cache and apply default time to live of 5 minutes

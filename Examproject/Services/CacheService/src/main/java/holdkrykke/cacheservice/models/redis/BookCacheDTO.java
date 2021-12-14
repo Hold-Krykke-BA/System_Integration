@@ -21,7 +21,6 @@ public class BookCacheDTO implements Serializable {
     private String location;
     private String type; // ebook, audiobook, book
     private Double price;
-
     private int quantity;
     private Long _TimeToLive;
 }
