@@ -26,7 +26,7 @@ public class ISBNServiceLocator extends org.apache.axis.client.Service implement
     }
 
     // Use to get a proxy class for ISBNServiceSoap
-    private java.lang.String ISBNServiceSoap_address = "https://webservices.daehosting.com/services/ISBNService.wso";
+    private java.lang.String ISBNServiceSoap_address = "http://webservices.daehosting.com/services/isbnservice.wso";
 
     public java.lang.String getISBNServiceSoapAddress() {
         return ISBNServiceSoap_address;
@@ -71,7 +71,7 @@ public class ISBNServiceLocator extends org.apache.axis.client.Service implement
 
 
     // Use to get a proxy class for ISBNServiceSoap12
-    private java.lang.String ISBNServiceSoap12_address = "https://webservices.daehosting.com/services/ISBNService.wso";
+    private java.lang.String ISBNServiceSoap12_address = "http://webservices.daehosting.com/services/isbnservice.wso";
 
     public java.lang.String getISBNServiceSoap12Address() {
         return ISBNServiceSoap12_address;
