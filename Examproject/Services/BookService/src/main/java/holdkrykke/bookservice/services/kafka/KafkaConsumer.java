@@ -3,14 +3,16 @@ package holdkrykke.bookservice.services.kafka;
 
 import holdkrykke.bookservice.models.Book;
 import holdkrykke.bookservice.models.Order;
+import holdkrykke.bookservice.models.OrderItem;
 import holdkrykke.bookservice.repositories.BookStoreRepository;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -19,19 +21,21 @@ public class KafkaConsumer {
     @Autowired
     private BookStoreRepository repo;
 
-    @KafkaListener(topics = "saleregisteredcaching", groupId = "salegroup" )
-    public void consume( GenericMessage<Order> orderMessage) {
-        System.out.println("Consumed message: " + orderMessage);
-        System.out.println("Converted order: " + orderMessage.getPayload());
-        System.out.println("Is the converted order actually an order?: " + (orderMessage.getPayload() instanceof Order));
+    @KafkaListener(topics = "saleregisteredcaching", groupId = "salegroup")
+    public void consume(GenericMessage<Order> orderMessage) {
+        System.out.println("Kafka Consumed message: " + orderMessage);
+        Order order = orderMessage.getPayload();
 
+        //Consolidate equal books to gather amount sold
+        Map<OrderItem, Long> ordersAndAmounts =
+                order.getOrderItems().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        //Parse message to Order
-        //Filtrer på ID ->
-        //Update DB on ID, decrement by amount of ID hits
-//        Book book = repo.findById("").get();
-//        book.setQuantity(book.getQuantity() - 1);
-//        repo.save(book);
+        ordersAndAmounts.forEach((item, count) -> {
+            System.out.println("Purchased amount: " + count);
+            Book book = repo.findById(item.getIsbn()).get(); //get book
+            System.out.println("Current quantity remaining: " + book.getQuantity());
+            book.setQuantity(book.getQuantity() - count.intValue()); //replace book quantity by purchased amount
+            repo.save(book);
+        });
     }
-
 }

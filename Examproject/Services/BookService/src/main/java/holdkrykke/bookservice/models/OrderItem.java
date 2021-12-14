@@ -15,11 +15,8 @@ import java.io.Serializable;
 public class OrderItem implements Serializable {
     private String isbn;
     private String title;
-    private String authors;
-    private String edition;
-    private int pages;
-    private int year;
-    private Boolean isDigital;
+    private String[] authors;
+    private String location;
+    private String type; // ebook, audiobook, book
     private Double price;
-
 }

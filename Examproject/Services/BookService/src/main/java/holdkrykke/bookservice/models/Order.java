@@ -20,7 +20,7 @@ public class Order implements Serializable {
     private String id;
     private String orderNumber;
     private String orderStatus;
-    private String orderType;
+    private String orderType; // book, ebook, audiobook, ebook/audiobook
     private String customerMail;
     private String customerFullName;
     private String customerAddress;

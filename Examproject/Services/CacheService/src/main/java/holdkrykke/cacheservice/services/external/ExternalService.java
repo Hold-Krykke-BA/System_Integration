@@ -7,6 +7,8 @@ import com.google.gson.JsonSyntaxException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Component
 public class ExternalService {
 
@@ -18,15 +20,14 @@ public class ExternalService {
         return books;
     }
 
-    public String getBooksByAuthor(String authorsStr){
+    public String getBooksByAuthor(List<String> authors){
         String url = "https://openlibrary.org/search/authors.json?q=";
-        String[] authors = authorsStr.split(",");
-        String[] urls = new String[authors.length];
+        String[] urls = new String[authors.size()];
         RestTemplate template = new RestTemplate();
         String books = "";
 
-        for (int i = 0; i < authors.length; i++) {
-            String temp = url + authors[i];
+        for (int i = 0; i < authors.size(); i++) {
+            String temp = url + authors.get(i);
             urls[i] = temp;
             System.out.println("urls[i] " + urls[i]);
         }
