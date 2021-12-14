@@ -1,13 +1,18 @@
 package holdkrykke.cacheservice.services.grpc;
 
+import holdkrykke.cacheservice.services.ApplicationService;
 import holdkrykke.cacheservice.services.RegisterServiceGrpc;
 import holdkrykke.cacheservice.services.RegisterRequest;
 import holdkrykke.cacheservice.services.ProtoResponse;
 import io.grpc.stub.StreamObserver;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase{
+
+    @Autowired
+    private ApplicationService applicationService;
 
     @Override
     public void register(RegisterRequest request, StreamObserver<ProtoResponse> responseObserver) {
