@@ -90,17 +90,15 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 * SOAP
 
 #### Description
-```diff
-- TODO
-```
-#### Cloud-hosted MongoDB
-```diff
-- TODO
-```
+The service is responsible for adding new books to the MongoDB, and while doing so also validating the ISBN through an external SOAP API. The service is also responsible for keeping the quantity of a given book up-to-date in the MongoDB.
+
+#### MongoDB Atlas
+The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.  The database is written to when the `POST` endpoint `addBook` is triggered and when a Kafka message is consumed. 
+
 #### Apache Kafka
-```diff
-- TODO
-```
+The service consumes messages on the following format sent on the topic `saleregisteredcaching`:  
+![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/cachingMSG.PNG)
+
 #### SOAP
 ```diff
 - TODO
@@ -128,7 +126,7 @@ We are using the [openlibrary](https://openlibrary.org) ressource as our `Extern
 #### MongoDB Atlas
 The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.  The database is queried when 
 ```diff
-- ^ The database is queried when 
+- ^ The database is queried when.... 
 ```
 
 #### Apache Camel
@@ -169,7 +167,7 @@ The service produces messages on two topics, both can be seen in the following i
 The service is responsible for consuming incoming Kafka messages containing order numbers for new orders, polling the MongoDB for the orders, processing the orders via the embedded Camunda, changing the order status during the processing and sending out emails for the customers with order statuses. 
 
 #### Apache Kafka
-The service consumes messages on the following format:  
+The service consumes messages on the following format sent on the topic `saleregisteredprocessing`:  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/processingMSG.PNG)  
 
 #### MongoDB Atlas
