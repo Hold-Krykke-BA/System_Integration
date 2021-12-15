@@ -41,33 +41,30 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 ## Services
 
 ### BookService
-**Initialized with:**
-```diff
-- TODO
-```
 
 #### Integrations and tools
-```diff
-- TODO
-```
+* Cloud-hosted MongoDB
+* Kafka
+* SOAP
+
 #### Description
 ```diff
 - TODO
 ```
-#### Integration1
+#### Cloud-hosted MongoDB
 ```diff
 - TODO
 ```
-#### Integration2
+#### Kafka
+```diff
+- TODO
+```
+#### SOAP
 ```diff
 - TODO
 ```
 
 ### CacheService
-**Initialized with:**
-```diff
-- TODO
-```
 
 #### Integrations and tools
 * External API
