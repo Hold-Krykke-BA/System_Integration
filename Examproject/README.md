@@ -121,7 +121,7 @@ The human tasks in the Camunda process can be seen in the following gif:
 #### Spring Boot Mail
 In ordder to send emails to the customers during the order processing we are using the JavaMailSender. The result are mails looking like this:  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/CustomerMail.PNG)  
-Run the 
+
 
 ## How to run
 * Paste the relevant `application.properties` files to all the services in your clone (ours are ignored due to secrets) and set your own mongo cloud connection strings
