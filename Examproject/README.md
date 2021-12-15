@@ -99,9 +99,23 @@ The service consumes messages on the following format:
 
 #### Cloud-hosted MongoDB
 The `consume(GenericMessage<OrderNumberDTO>  message)` method initiates the polling of the MongoDB, checks that the order status is registered before initiating Camunda. During the several Camunda processes, the order status is updated in MongoDB. The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.
-Documents in the Orderstore are designed as follows:
+Documents in the Orderstore are designed as follows:  
+![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/mongoDBOrder.PNG)  
 
 #### Embedded Camunda
+Camunda is embedded in the service and is initiated by `consume(GenericMessage<OrderNumberDTO>  message)` after the order status has been checked, with the `order` and `orderType` as variables. The flow in Camunda is as follows:  
+ ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/CamundaBPMN.PNG)  
+* The order is sent through the `Order Type Rules` check
+ ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/CamundaDMN.PNG)  
+* The output from the check determines if the order needs human handling and this decision is handled by a gate. 
+* If the order consists of digital books the order is processed by the service task `Ship Digital Order` which is responsible for updating the order status to `shipped` and sending the customer an email, alerting them that the order is on the way. 
+* If the order consists of physical books, the order is processed by the service task `Order Status Processing` that is responsible for updating the order status to `processing` and sending the customer an email alerting of the status change. 
+  * The order then needs to be collected and assembled by a human worker and marked as done when it's ready for shipping
+  * A human worker handles the shipping and marks the orders as done
+  * At last, the order is processed by the service task `Order Status Shipped` which is responsible for updating the order status to `shipped` and sending the customer an email, alerting them that the order is on the way. 
+* The order has been shipped and the Camunda process terminates
+  
+  
 
 #### Spring Boot Mail
 
