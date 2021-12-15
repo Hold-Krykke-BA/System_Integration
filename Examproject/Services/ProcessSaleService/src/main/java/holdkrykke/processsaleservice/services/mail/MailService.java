@@ -2,16 +2,18 @@ package holdkrykke.processsaleservice.services.mail;
 
 import holdkrykke.processsaleservice.models.Order;
 import holdkrykke.processsaleservice.models.OrderItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Component
 public class MailService {
+    private static final Logger logger = LoggerFactory.getLogger(MailService.class);
     @Autowired
     private JavaMailSender javaMailSender;
 
@@ -23,13 +25,20 @@ public class MailService {
         helper.setSubject(subject);
         helper.setText(text,true);
         javaMailSender.send(mimeMessage);
+        logger.info("Sending mail to [{}]", to);
     }
 
     public String createBody(Order order){
         String items = "";
         for(OrderItem item : order.getOrderItems()){
+            String authors = "";
+            for (String author : item.getAuthors()){
+                authors = authors + author + ", ";
+            }
+            authors = authors.substring(0,authors.length()-2);
             String temp =  "<b>Title: </b>" + item.getTitle() + "<br>"
-                    + "<b>Authors: </b>" + item.getAuthors() + "<br>"
+                    + "<b>Authors: </b>" + authors + "<br>"
+                    + "<b>Format: </b>" + item.getType() + "<br>"
                     + "<b>Price: </b>" + item.getPrice() + "<br>"
                     + "-----<br>";
             items = items + temp;
@@ -42,8 +51,8 @@ public class MailService {
                 + "<b>Address: </b>" + order.getCustomerAddress() + "<br>"
                 + "<b>Mail: </b>" + order.getCustomerMail()
                 + "<h3>Order: </h3>"
-                + items + "<br>"
-                + "<b>Total price: </b>: " + order.getTotalPrice() + "<br>";
+                + items
+                + "<h3>Total price: " + order.getTotalPrice() + "<h3>";
         return mailText;
 
     }

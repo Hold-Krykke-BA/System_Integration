@@ -3,6 +3,8 @@ package holdkrykke.cacheservice;
 import holdkrykke.cacheservice.services.grpc.ProtoService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
@@ -14,21 +16,14 @@ import java.io.IOException;
 @EnableRedisRepositories
 @EnableMongoRepositories
 public class CacheServiceApplication {
-
+    private static final Logger logger = LoggerFactory.getLogger(CacheServiceApplication.class);
     public static void main(String[] args) throws IOException, InterruptedException{
-
-        //For this application as a whole:
-        //Request for book
-        //Check cache
-        //If in cache, refresh the TTL and return the data (done)
-        //if NOT in cache, get from external sources, put in cache, return data
-
         SpringApplication.run(CacheServiceApplication.class, args);
 
-        // gRPC Server
         Server server = ServerBuilder.forPort(6000)
                 .addService(new ProtoService()).build();
         server.start();
+        logger.info("Starting gRPC server on port [{}]", server.getPort());
         server.awaitTermination();
     }
 }

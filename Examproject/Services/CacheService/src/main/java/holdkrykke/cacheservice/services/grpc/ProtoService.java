@@ -6,18 +6,20 @@ import holdkrykke.cacheservice.services.RegisterRequest;
 import holdkrykke.cacheservice.services.ProtoResponse;
 import io.grpc.stub.StreamObserver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase{
+    private static final Logger logger = LoggerFactory.getLogger(ProtoService.class);
 
     @Autowired
     private ApplicationService applicationService;
 
     @Override
     public void register(RegisterRequest request, StreamObserver<ProtoResponse> responseObserver) {
-        System.out.println("Request received from client:\n" + request);
-
+        logger.info("Request received from client [{}]", request);
         String retrieved = handleRequest(request); // set response to bloom
         ProtoResponse response = ProtoResponse.newBuilder()
                 .setRetrieved(retrieved)
