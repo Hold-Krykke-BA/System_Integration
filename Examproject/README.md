@@ -93,7 +93,7 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 ```diff
 - TODO
 ```
-#### Cloud-hosted MongoDB
+#### MongoDB Atlas
 ```diff
 - TODO
 ```
