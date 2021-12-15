@@ -56,8 +56,8 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 * Spring Kafka
 
 #### Integrations
-Cloud-hosted MongoDB
-Kafka 
+* Cloud-hosted MongoDB  
+* Kafka 
 
 #### Description
 The service is responsible for receiving incoming orders, splitting them in two if they are mixed (digital/physical), storing the order(s) and producing Kafka messages on two topics, to announce that an order has been received and stored. 
@@ -85,10 +85,10 @@ The service produces messages on two topics, both can be seen in the following i
 * Spring Boot Mail
 
 #### Integrations
-Cloud-hosted MongoDB
-Embedded Camunda, with internal H2 database
-Spring Boot Mail
-Kafka 
+* Cloud-hosted MongoDB  
+* Embedded Camunda, with internal H2 database  
+* Spring Boot Mail  
+* Kafka  
 
 #### Description
 The service is responsible for consuming incoming Kafka messages containing order numbers for new orders, polling the MongoDB for the orders, processing the orders via the embedded Camunda, changing the order status during the processing and sending out emails for the customers with order statuses. 
