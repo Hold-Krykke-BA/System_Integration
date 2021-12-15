@@ -16,7 +16,8 @@
     <properties>
         <java.version>11</java.version>
         <spring-cloud.version>2021.0.0</spring-cloud.version>
-        <camel-spring-boot-bom.version>3.13.0</camel-spring-boot-bom.version>
+<!--        <camel-spring-boot-bom.version>3.13.0</camel-spring-boot-bom.version>-->
+        <camel.version>3.13.0</camel.version>
     </properties>
     <dependencies>
         <dependency>
@@ -87,26 +88,37 @@
             <version>1.16.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-activemq</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.activemq</groupId>-->
+<!--            <artifactId>activemq-camel</artifactId>-->
+<!--        </dependency>-->
 
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-activemq</artifactId>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.camel</groupId>-->
+<!--            <artifactId>camel-core</artifactId>-->
+<!--            <version>${camel-spring-boot-bom.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-spring-boot-starter</artifactId>
+            <version>${camel.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-activemq</artifactId>
-            <version>${camel-spring-boot-bom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel.springboot</groupId>
-            <artifactId>camel-activemq-starter</artifactId>
-            <version>${camel-spring-boot-bom.version}</version>
-            <!-- https://camel.apache.org/components/3.13.x/activemq-component.html @ Spring Boot Auto-Configuration -->
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.camel</groupId>-->
+<!--            <artifactId>camel-activemq</artifactId>-->
+<!--            <version>${camel-spring-boot-bom.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.camel.springboot</groupId>-->
+<!--            <artifactId>camel-activemq-starter</artifactId>-->
+<!--            <version>${camel-spring-boot-bom.version}</version>-->
+<!--            &lt;!&ndash; https://camel.apache.org/components/3.13.x/activemq-component.html @ Spring Boot Auto-Configuration &ndash;&gt;-->
+<!--        </dependency>-->
 
     </dependencies>
     <dependencyManagement>
@@ -118,13 +130,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.apache.camel.springboot</groupId>
-                <artifactId>camel-spring-boot-bom</artifactId>
-                <version>${camel-spring-boot-bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.apache.camel.springboot</groupId>-->
+<!--                <artifactId>camel-spring-boot-bom</artifactId>-->
+<!--                <version>${camel-spring-boot-bom.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 

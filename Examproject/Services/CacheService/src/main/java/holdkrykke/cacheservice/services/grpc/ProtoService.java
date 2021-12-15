@@ -14,8 +14,8 @@ import java.util.List;
 public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase{
     private static final Logger logger = LoggerFactory.getLogger(ProtoService.class);
 
-    @Autowired
-    private ApplicationService applicationService;
+//    @Autowired
+//    private ApplicationService applicationService;
 
     @Override
     public void register(RegisterRequest request, StreamObserver<ProtoResponse> responseObserver) {
