@@ -102,16 +102,6 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 ```
 
 ### RegisterSaleService
-**Initialized with:**
-* Spring Boot DevTools
-* Lombok
-* Spring Web
-* Spring REST Repositories
-* Spring Data MongoDB
-* Spring Boot Actuator
-* Netflix Eureka Discovery Client
-* Spring Kafka
-
 
 #### Integrations and tools
 * Cloud-hosted MongoDB  
@@ -131,20 +121,6 @@ The service produces messages on two topics, both can be seen in the following i
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/KafkaMagicCacheTopics.PNG)  
 
 ### ProcessSaleService
-**Initialized with:**
-* Spring Boot DevTools
-* Lombok
-* Spring Web
-* Spring REST Repositories
-* Spring Data MongoDB
-* Spring Boot Actuator
-* Netflix Eureka Discovery Client
-* Spring Kafka
-* Camunda
-* H2 database
-* Spring Boot JPA
-* Spring Boot Mail
-
 
 #### Integrations and tools
 * Cloud-hosted MongoDB  
