@@ -1,3 +1,4 @@
+
 # System Integration Exam Project 
 
 ## Contributors
@@ -57,32 +58,35 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 * Country-specific storage facility with database
 * Caching of the number of available books local and remote
 * Storage of order data in cloud storage
-* Employees validate physical sales in a BPMN process
-  * Online ebook/audiobook sales do not require human validation
+* Employees validate sale of physical books in a BPMN process
+  * Ebook/audiobook sales do not require human validation
 * Customer receives Order and Shipping confirmation mail
 * Validation of ISBN when adding new books to the database
 * Inter-service-communication where necessary
 * Logging in all services
 
 ### Technologies
-| Technology  |
-|:--|
-| Spring Boot |
-|  Netflix Eureka |
-|  Apache Camel |
-|  Camunda |
-|  Docker |
-|  H2 database |
-|  MongoDB Cloud |
-|  Kafka |
+| Technology / Tools / Integration | Usage |
+|:--|:--|
+| Spring Boot | Java framework used in all services, including many Spring Boot tools |
+|  Netflix Eureka | Middleware used for discovery of services |
+|  Apache Camel | M.O.M. middleware used for data transformation in one of our services |
+|  Camunda | Workflow and decision automation, used embedded in our one of services|
+|  Docker | Containers running images of Kafka and Redis |
+|  H2 database | Internally used by embedded Camunda |
+|  MongoDB Atlas | Cloud NoSQL clustered database  |
+|  Apache Kafka |Used as a message broker between serives |
+|  Redis | Key-value store used for caching |
+|  gRPC |Remote procedure calls for getting books form our service|
+|  SOAP | Message protocol used by our service to validate ISBN|
 
 ## Services
 
 ### BookService
 
 #### Integrations and tools
-* Cloud-hosted MongoDB
-* Kafka
+* MongoDB Atlas
+* Apache Kafka
 * SOAP
 
 #### Description
@@ -93,7 +97,7 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 ```diff
 - TODO
 ```
-#### Kafka
+#### Apache Kafka
 ```diff
 - TODO
 ```
@@ -106,8 +110,8 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 
 #### Integrations and tools
 * External API
-* Self-hosted Redis hosted in docker
-* Cloud-hosted MongoDB
+* Redis hosted in docker container
+* MongoDB Atlas
 * Apache Camel
 * gRPC
  
@@ -119,11 +123,11 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 ```diff
 - TODO
 ```
-#### Self-hosted Redis
+#### Redis
 ```diff
 - TODO
 ```
-#### Cloud-hosted MongoDB
+#### MongoDB Atlas
 ```diff
 - TODO
 ```
@@ -139,18 +143,18 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 ### RegisterSaleService
 
 #### Integrations and tools
-* Cloud-hosted MongoDB  
+* MongoDB Atlas
 * Kafka 
 
 #### Description
 The service is responsible for receiving incoming orders, splitting them in two if they are mixed (digital/physical), storing the order(s) and producing Kafka messages on two topics, to announce that an order has been received and stored. 
 
-#### Cloud-hosted MongoDB
+#### MongoDB Atlas
 The `createOrder(Order order)` endpoint in the KafkaOrderController saves the order to the MongoDB after some checks and possible splits have occured. The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.  
 Documents in the Orderstore are designed as follows:  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/mongoDBOrders.PNG)  
 
-#### Kafka
+#### Apache Kafka
 The service produces messages on two topics, both can be seen in the following images:  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/KafkaMagicRegister.PNG)  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/KafkaMagicCacheTopics.PNG)  
@@ -158,19 +162,19 @@ The service produces messages on two topics, both can be seen in the following i
 ### ProcessSaleService
 
 #### Integrations and tools
-* Cloud-hosted MongoDB  
+* MongoDB Atlas 
 * Embedded Camunda, with internal H2 database  
 * Spring Boot Mail  
-* Kafka  
+* Apache Kafka
 
 #### Description
 The service is responsible for consuming incoming Kafka messages containing order numbers for new orders, polling the MongoDB for the orders, processing the orders via the embedded Camunda, changing the order status during the processing and sending out emails for the customers with order statuses. 
 
-#### Kafka
+#### Apache Kafka
 The service consumes messages on the following format:  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/processingMSG.PNG)  
 
-#### Cloud-hosted MongoDB
+#### MongoDB Atlas
 The `consume(GenericMessage<OrderNumberDTO>  message)` method initiates the polling of the MongoDB, checks that the order status is registered before initiating Camunda. During the several Camunda processes, the order status is updated in MongoDB. The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.
 
 #### Embedded Camunda
@@ -195,7 +199,7 @@ In ordder to send emails to the customers during the order processing we are usi
 
 
 ## How to run
-* Paste the relevant `application.properties` files to all the services in your clone (ours are ignored due to secrets) and set your own mongo cloud connection strings
+* Paste the relevant `application.properties` files to all the services in your clone (ours are ignored due to secrets) and set your own MongoDB Atlas connection strings
 * Run `docker compose up -d` in the folder with the [docker-compose.yml](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/docker-compose.yml)
 * Run `docker run --name redis -v redis-data:/data -p 6379:6379 -d redis:alpine` in git bash
 * Build all the services
