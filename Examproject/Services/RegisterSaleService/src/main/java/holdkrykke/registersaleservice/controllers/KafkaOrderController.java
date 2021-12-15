@@ -90,7 +90,6 @@ public class KafkaOrderController {
     }
 
     private String getOrderType(List<OrderItem> items) throws RegisterSaleException {
-        // tjek på 2 boolean
         boolean ebook = false;
         boolean audiobook = false;
         boolean book = false;

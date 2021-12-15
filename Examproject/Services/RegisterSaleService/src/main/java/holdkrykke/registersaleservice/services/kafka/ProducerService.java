@@ -17,7 +17,7 @@ public class ProducerService {
 
     public void sendSaleRegistered(String topic, OrderNumberDTO message) {
         template.send(topic, message);
-        logger.info("Producer sends on topic [{} {}]", topic, message);
+        logger.info("Producer sends on topic: {}, message: {}", topic, message);
         template.flush();
     }
 
@@ -25,7 +25,7 @@ public class ProducerService {
     public void sendSaleRegistered(String topic, Order message) {
 
         template.send(topic, message);
-        logger.info("Producer sends on topic [{} {}]", topic, message);
+        logger.info("Producer sends on topic: {}, message: {}", topic, message);
         template.flush();
     }
 
