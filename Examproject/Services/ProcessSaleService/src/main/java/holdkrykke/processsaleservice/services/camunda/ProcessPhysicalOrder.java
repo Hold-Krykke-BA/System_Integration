@@ -31,6 +31,7 @@ public class ProcessPhysicalOrder implements JavaDelegate {
             orderRepository.save(_order);
             Order updatedOrder = orderRepository.findByOrderNumber(_order.getOrderNumber());
             logger.info("Physical order, orderStatus changed [{}]", updatedOrder.getOrderStatus());
+            logger.info("Preparing order-information-mail for order number [{}]", updatedOrder.getOrderNumber());
             mailService.sendEmail(updatedOrder.getCustomerMail(), "Order confirmation: " + updatedOrder.getOrderNumber(),
                     mailService.createBody(updatedOrder));
         } catch (MongoException ex) {
