@@ -2,8 +2,8 @@
 # System Integration Exam Project 
 
 ## Contributors
-- _[Rúni Vedel Niclasen - cph-rn118](https://github.com/Runi-VN)_
-- _[Camilla Jenny Valerius Staunstrup - cph-cs340](https://github.com/Castau)_
+- **_[Rúni Vedel Niclasen - cph-rn118](https://github.com/Runi-VN)_**
+- **_[Camilla Jenny Valerius Staunstrup - cph-cs340](https://github.com/Castau)_**
 
 ## Assignment Description
 * [Exam Assignment Document](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Docs/SI2021ExamAssignment.pdf)
