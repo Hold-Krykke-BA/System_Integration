@@ -7,6 +7,48 @@
 ## Assignment Description
 * [Exam Assignment Document](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Docs/SI2021ExamAssignment.pdf)
 
+## Table of Contents
+
+- [System Integration Exam Project](#system-integration-exam-project)
+  * [Contributors](#contributors)
+  * [Assignment Description](#assignment-description)
+  * [Process](#process)
+    + [Business case](#business-case)
+    + [Initial diagram](#initial-diagram)
+    + [Requirements](#requirements)
+    + [Technologies](#technologies)
+  * [Services](#services)
+    + [BookService](#bookservice)
+      - [Integrations and tools](#integrations-and-tools)
+      - [Description](#description)
+      - [Cloud-hosted MongoDB](#cloud-hosted-mongodb)
+      - [Kafka](#kafka)
+      - [SOAP](#soap)
+    + [CacheService](#cacheservice)
+      - [Integrations and tools](#integrations-and-tools-1)
+      - [Description](#description-1)
+      - [External API](#external-api)
+      - [Self-hosted Redis](#self-hosted-redis)
+      - [Cloud-hosted MongoDB](#cloud-hosted-mongodb-1)
+      - [Apache Camel](#apache-camel)
+      - [gRPC](#grpc)
+    + [RegisterSaleService](#registersaleservice)
+      - [Integrations and tools](#integrations-and-tools-2)
+      - [Description](#description-2)
+      - [Cloud-hosted MongoDB](#cloud-hosted-mongodb-2)
+      - [Kafka](#kafka-1)
+    + [ProcessSaleService](#processsaleservice)
+      - [Integrations and tools](#integrations-and-tools-3)
+      - [Description](#description-3)
+      - [Kafka](#kafka-2)
+      - [Cloud-hosted MongoDB](#cloud-hosted-mongodb-3)
+      - [Embedded Camunda](#embedded-camunda)
+      - [Spring Boot Mail](#spring-boot-mail)
+  * [How to run](#how-to-run)
+    + [BookService-specific](#bookservice-specific)
+    + [CacheService-specific](#cacheservice-specific)
+  * [Resources](#resources)
+
 ## Process
 ### Business case
 Physical bookstore with a small monolithic online store (sells books, ebooks and audiobooks) has been acquired by a larger corporation. The online store should present the same to the customers, but the backend needs a complete overhaul to conform and comply with the corporation's requirements.
