@@ -41,8 +41,65 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 ## Services
 
 ### BookService
+**Initialized with:**
+```diff
+- TODO
+```
+
+#### Integrations and tools
+```diff
+- TODO
+```
+#### Description
+```diff
+- TODO
+```
+#### Integration1
+```diff
+- TODO
+```
+#### Integration2
+```diff
+- TODO
+```
 
 ### CacheService
+**Initialized with:**
+```diff
+- TODO
+```
+
+#### Integrations and tools
+* External API
+* Self-hosted Redis hosted in docker
+* Cloud-hosted MongoDB
+* Apache Camel
+* gRPC
+ 
+#### Description
+```diff
+- TODO
+```
+#### External API
+```diff
+- TODO
+```
+#### Self-hosted Redis
+```diff
+- TODO
+```
+#### Cloud-hosted MongoDB
+```diff
+- TODO
+```
+#### Apache Camel
+```diff
+- TODO
+```
+#### gRPC
+```diff
+- TODO
+```
 
 ### RegisterSaleService
 **Initialized with:**
@@ -55,14 +112,18 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 * Netflix Eureka Discovery Client
 * Spring Kafka
 
-#### Integrations
+
+#### Integrations and tools
 * Cloud-hosted MongoDB  
 * Kafka 
 
 #### Description
 The service is responsible for receiving incoming orders, splitting them in two if they are mixed (digital/physical), storing the order(s) and producing Kafka messages on two topics, to announce that an order has been received and stored. 
 
-#### MongoDB
+#### Cloud-hosted MongoDB
+The `createOrder(Order order)` endpoint in the KafkaOrderController saves the order to the MongoDB after some checks and possible splits have occured. The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.  
+Documents in the Orderstore are designed as follows:  
+![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/mongoDBOrders.PNG)  
 
 #### Kafka
 The service produces messages on two topics, both can be seen in the following images:  
@@ -84,7 +145,8 @@ The service produces messages on two topics, both can be seen in the following i
 * Spring Boot JPA
 * Spring Boot Mail
 
-#### Integrations
+
+#### Integrations and tools
 * Cloud-hosted MongoDB  
 * Embedded Camunda, with internal H2 database  
 * Spring Boot Mail  
@@ -99,8 +161,6 @@ The service consumes messages on the following format:
 
 #### Cloud-hosted MongoDB
 The `consume(GenericMessage<OrderNumberDTO>  message)` method initiates the polling of the MongoDB, checks that the order status is registered before initiating Camunda. During the several Camunda processes, the order status is updated in MongoDB. The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.
-Documents in the Orderstore are designed as follows:  
-![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/mongoDBOrders.PNG)  
 
 #### Embedded Camunda
 Camunda is embedded in the service and is initiated by `consume(GenericMessage<OrderNumberDTO>  message)` after the order status has been checked, with the `order` and `orderType` as variables. The flow in Camunda is as follows:  
