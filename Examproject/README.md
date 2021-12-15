@@ -2,8 +2,8 @@
 # System Integration Exam Project 
 
 ## Contributors
-- **_[Rúni Vedel Niclasen - cph-rn118](https://github.com/Runi-VN)_**
-- **_[Camilla Jenny Valerius Staunstrup - cph-cs340](https://github.com/Castau)_**
+- _[Rúni Vedel Niclasen - cph-rn118](https://github.com/Runi-VN)_
+- _[Camilla Jenny Valerius Staunstrup - cph-cs340](https://github.com/Castau)_
 
 ## Assignment Description
 * [Exam Assignment Document](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Docs/SI2021ExamAssignment.pdf)
@@ -93,7 +93,7 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 ```diff
 - TODO
 ```
-#### MongoDB Atlas
+#### Cloud-hosted MongoDB
 ```diff
 - TODO
 ```
@@ -116,29 +116,27 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 * gRPC
  
 #### Description
-```diff
-- TODO
-```
+The service is responsible for caching the quantity of the most accessed books from both the `External API` and Mongo Atlas in the Redis key-value store. The service also exposes the gRPC server for querying.
+
 #### External API
-```diff
-- TODO
-```
+We are using the [openlibrary](https://openlibrary.org) ressource as our `External API` in the service. We are using the Spring Boot `RestTemplate` for this. 
+
 #### Redis
 ```diff
 - TODO
 ```
 #### MongoDB Atlas
+The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.  The database is queried when 
 ```diff
-- TODO
+- ^ The database is queried when 
 ```
+
 #### Apache Camel
 ```diff
 - TODO
 ```
 #### gRPC
-```diff
-- TODO
-```
+The service exposes a gRPC server for for querying books stored either in the cache, the External API og MongoDB. The service is generated from a `.proto` file when Maven compiles. We use BloomRPC as the client. 
 
 ### RegisterSaleService
 
