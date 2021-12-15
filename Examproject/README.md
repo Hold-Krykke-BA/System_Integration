@@ -94,11 +94,12 @@ Kafka
 The service is responsible for consuming incoming Kafka messages containing order numbers for new orders, polling the MongoDB for the orders, processing the orders via the embedded Camunda, changing the order status during the processing and sending out emails for the customers with order statuses. 
 
 #### Kafka
-The service consumes messages on the following format:
-![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/KafkaMagicRegister.PNG)  
-![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/KafkaMagicCache.PNG)  
+The service consumes messages on the following format:  
+![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/processingMSG.PNG)  
 
 #### Cloud-hosted MongoDB
+The `consume(GenericMessage<OrderNumberDTO>  message)` method initiates the polling of the MongoDB, checks that the order status is registered before initiating Camunda. During the several Camunda processes, the order status is updated in MongoDB. The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.
+Documents in the Orderstore are designed as follows:
 
 #### Embedded Camunda
 
