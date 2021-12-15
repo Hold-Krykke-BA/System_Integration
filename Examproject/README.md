@@ -67,7 +67,7 @@ The service is responsible for receiving incoming orders, splitting them in two 
 #### Kafka
 The service produces messages on two topics, both can be seen in the following images:  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/KafkaMagicRegister.PNG)  
-![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/KafkaMagicCache.PNG)  
+![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/KafkaMagicCacheTopics.PNG)  
 
 ### ProcessSaleService
 **Initialized with:**
@@ -100,7 +100,7 @@ The service consumes messages on the following format:
 #### Cloud-hosted MongoDB
 The `consume(GenericMessage<OrderNumberDTO>  message)` method initiates the polling of the MongoDB, checks that the order status is registered before initiating Camunda. During the several Camunda processes, the order status is updated in MongoDB. The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.
 Documents in the Orderstore are designed as follows:  
-![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/mongoDBOrder.PNG)  
+![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/mongoDBOrders.PNG)  
 
 #### Embedded Camunda
 Camunda is embedded in the service and is initiated by `consume(GenericMessage<OrderNumberDTO>  message)` after the order status has been checked, with the `order` and `orderType` as variables. The flow in Camunda is as follows:  
@@ -120,7 +120,7 @@ The human tasks in the Camunda process can be seen in the following gif:
 
 #### Spring Boot Mail
 In ordder to send emails to the customers during the order processing we are using the JavaMailSender. The result are mails looking like this:  
-
+![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/CustomerMail.PNG)  
 
 
 ## How to run
