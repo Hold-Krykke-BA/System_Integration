@@ -44,7 +44,7 @@
 - [How to run](#how-to-run)
   * [BookService-specific](#bookservice-specific)
   * [CacheService-specific](#cacheservice-specific)
-- [Resources](#resources)
+
 
 ## Process
 ### Business case
