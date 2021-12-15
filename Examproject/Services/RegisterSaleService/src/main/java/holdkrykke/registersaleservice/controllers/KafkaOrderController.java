@@ -46,6 +46,7 @@ public class KafkaOrderController {
             for(Order _order: orderList){
                 Order saved = orderRepository.save(_order);
                 savedOrderList.add(saved);
+                logger.info("Order saved, producing Kafka messages");
                 service.sendSaleRegistered(processingTopic, new OrderNumberDTO(saved));
                 service.sendSaleRegistered(cachingTopic, saved);
             }
@@ -70,6 +71,7 @@ public class KafkaOrderController {
             }
         }
         if (!itemsDigital.isEmpty() && !itemsPhysical.isEmpty()) {
+            logger.info("Order with order number [{}] split in two [a] and [b]", order.getOrderNumber());
             Order orderDigital = new Order(order);
             orderDigital.setOrderItems(itemsDigital);
             orderDigital.setOrderType(getOrderType(itemsDigital));
@@ -90,7 +92,6 @@ public class KafkaOrderController {
     }
 
     private String getOrderType(List<OrderItem> items) throws RegisterSaleException {
-        // tjek på 2 boolean
         boolean ebook = false;
         boolean audiobook = false;
         boolean book = false;

@@ -2,6 +2,8 @@ package holdkrykke.cacheservice.repositories.redis;
 
 import holdkrykke.cacheservice.exceptions.NotFoundException;
 import holdkrykke.cacheservice.models.redis.BookCacheDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;
@@ -21,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class BookCacheRepository {
     private static int _CACHE_DURATION = 300;
     private static TimeUnit _UNIT = TimeUnit.SECONDS;
+    private static final Logger logger = LoggerFactory.getLogger(BookCacheRepository.class);
 
     @Autowired
     RedisTemplate<String, BookCacheDTO> redisTemplate;

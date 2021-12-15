@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +22,6 @@ public class Book {
     private int pages;
     private int year;
     private int quantity;
-    private String type; // ebook, audiobook, book
+    private String type;
     private Double price;
 }

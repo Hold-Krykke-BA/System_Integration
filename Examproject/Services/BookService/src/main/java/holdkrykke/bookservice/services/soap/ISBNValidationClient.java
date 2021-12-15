@@ -4,7 +4,6 @@ import holdkrykke.Exceptions.ISBNValidationException;
 import holdkrykke.bookservice.services.soap.consumingwebservice.ISBNServiceLocator;
 import holdkrykke.bookservice.services.soap.consumingwebservice.ISBNServiceSoapType;
 import org.springframework.stereotype.Service;
-
 import javax.xml.rpc.ServiceException;
 import java.rmi.RemoteException;
 
