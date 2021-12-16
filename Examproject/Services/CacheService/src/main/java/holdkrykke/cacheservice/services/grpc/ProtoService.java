@@ -1,6 +1,7 @@
 package holdkrykke.cacheservice.services.grpc;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import holdkrykke.cacheservice.exceptions.NotFoundException;
 import holdkrykke.cacheservice.models.Book.Book;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
@@ -93,13 +96,6 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
         List<String> authors = request.getAuthorsList();
         String title = request.getTitle();
 
-        //todo Try to build json object
-        //if query by isbn:
-        //isbn: <data>
-        //author: <null>
-        //title: <null>
-        //todo may be useful to create exit condition for isbn cache lookup instead, so it can do the last part of the flow too
-        //todo jsonObject constructor in ResponseDTO
 
         List<ResponseDTO> isbnResponse = new ArrayList<>();
 
@@ -116,9 +112,12 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
             } else {
                 //not in cache, regular lookup
                 var resultInternal = bookRepository.findByIsbn(isbn);
-                isbnResponse.add(transformData(resultInternal));
+                var transformationInt = transformData(resultInternal);
+                if (transformationInt != null) isbnResponse.add(transformationInt);
+
                 var resultExternal = externalService.getBooksByISBN(isbn);
-                isbnResponse.add(transformData(resultExternal));
+                var transformationExt = transformData(resultExternal);
+                if (transformationExt != null) isbnResponse.add(transformData(resultExternal));
             }
         }
 
@@ -126,34 +125,46 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
         List<ResponseDTO> authorResponse = new ArrayList<>();
         if (authors.size() > 0) {
             var resultInternal = bookRepository.findByAuthors(authors.toArray(new String[0]));
-            authorResponse.addAll(transformData(resultInternal));
+            var transformationInt = transformData(resultInternal);
+            if (transformationInt != null) authorResponse.addAll(transformationInt);
+
             var resultExternal = externalService.getBooksByAuthor(authors); //todo needs own method :(
-            authorResponse.add(transformData(resultExternal)); //todo needs other add too, probably
+            var transformationExt = transformData(resultExternal);
+            if (transformationExt != null) authorResponse.add(transformationExt); //todo needs other add too, probably
         }
 
 
         List<ResponseDTO> titleResponse = new ArrayList<>();
         if (title != null && !title.isBlank()) {
-            System.out.println(title);
             var resultInternal = bookRepository.findByTitle(title);
-            titleResponse.addAll(transformData(resultInternal));
+            var transformationInt = transformData(resultInternal);
+            if (transformationInt != null) titleResponse.addAll(transformationInt);
+
             var resultExternal = externalService.getBooksByTitle(title); //todo needs own method :(
-            titleResponse.add(transformData(resultExternal));//todo needs other add too, probably
+            var transformationExt = transformData(resultExternal);
+            if (transformationExt != null) titleResponse.add(transformationExt);//todo needs other add too, probably
         }
 
         //todo put in cache before return as bookcachedto
         //todo Save everything as BookCacheDTO (constructor..) to the cache
+        //todo jsonObject constructor in ResponseDTO
 
-        //todo call price/quantity if not already
-        //todo transform to larger json string object
 
-        return "am a hat"; // response object/list as stringified
+        JsonObject obj = new JsonObject();
+        obj.add("isbn", gson.toJsonTree(isbnResponse));
+        obj.add("authors", gson.toJsonTree(authorResponse));
+        obj.add("title", gson.toJsonTree(titleResponse));
+
+        String result = gson.toJson(obj);
+        System.out.println(result);
+        return result;
     }
 
     /**
      * Utility method to transform cache items from data stores to purchaseable OrderItems
      */
     private ResponseDTO transformData(BookCacheDTO book) {
+        if (book == null) return null;
         ResponseDTO transformation = new ResponseDTO(book);
         return arrangeFields(transformation);
     }
@@ -162,6 +173,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
      * Utility method to transform data from external data stores to purchaseable OrderItems
      */
     private ResponseDTO transformData(String book) {
+        if (book == null || book.isBlank()) return null;
         ResponseDTO transformation;
 
         System.out.println("String book found!::\n" + book);
@@ -170,6 +182,11 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
         var intermediary = gson.fromJson(book, JsonObject.class);
 
         System.out.println("String book to JsonElement::\n" + intermediary.toString());
+
+        if (intermediary.get("numFound").getAsInt() == 0) {//api error message
+            logger.info("External API did not find book");
+            return null;
+        }
 
         //Create new ResponseDTO based on JsonObject
         transformation = new ResponseDTO(intermediary);
@@ -181,6 +198,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
      * Utility method to transform data from internal data stores to purchaseable OrderItems
      */
     private ResponseDTO transformData(Book book) {
+        if (book == null) return null;
         ResponseDTO transformation = new ResponseDTO(book);
         return arrangeFields(transformation);
     }
@@ -191,6 +209,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
     private List<ResponseDTO> transformData(List<Book> books) {
         List<ResponseDTO> result = new ArrayList<>();
         for (Book book : books) {
+            if (book == null) continue;
             result.add(transformData(book));
         }
         return result;
@@ -212,7 +231,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
             dto.setPrice(randomizePrice());
             System.out.println(String.format("Arranging field price, was: %d and is now %d", _price, dto.getPrice()));
         }
-        if (_quantity == -1) { //todo fix or move
+        if (_quantity == 0) { //uninitialized int === 0. Or, if the warehouse is empty, we add some more!!
             dto.setQuantity(randomizeQuantity());
             System.out.println(String.format("Arranging field quantity, was: %d and is now %d", _quantity, dto.getQuantity()));
         }
@@ -227,21 +246,29 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
      * Utility method to randomize price if missing
      */
     private double randomizePrice() {
-        return 100.25;
-
+        int max = 1050;
+        int min = 50;
+        float price = ThreadLocalRandom.current().nextFloat() * (max - min) + min;
+        float priceRounded = (float) Math.round(price * 100.0f) / 100.0f;
+        return priceRounded;
     }
 
     /**
      * Utility method to randomize quantity if missing
      */
     private int randomizeQuantity() {
-        return 123;
+        int max = 500;
+        int min = 2;
+        int quantity = ThreadLocalRandom.current().nextInt() * (max - min) + min;
+        return quantity;
     }
 
     /**
      * Utility method to randomize book type if missing
      */
     private String randomizeType() {
-        return "book";
+        String[] types = new String[]{"book", "audiobook", "ebook"};
+        Random rnd = new Random();
+        return types[rnd.nextInt(types.length)];
     }
 }
