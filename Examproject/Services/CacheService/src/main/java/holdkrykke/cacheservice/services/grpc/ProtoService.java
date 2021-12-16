@@ -1,7 +1,6 @@
 package holdkrykke.cacheservice.services.grpc;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import holdkrykke.cacheservice.exceptions.NotFoundException;
 import holdkrykke.cacheservice.models.Book.Book;
@@ -17,7 +16,6 @@ import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,32 +27,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
     private static final Logger logger = LoggerFactory.getLogger(ProtoService.class);
     private Gson gson = new Gson();
-
-//    getBook from gRPC
-//
-//    check parameters
-//
-//
-//    getByCache --> findByIdAndRefresh --> return
-//
-//            else
-//
-//    check local
-//    check external
-//            (assuming found)
-//    transform to BookCacheDTO, add to cache
-//    transform to Book (or OrderItem or whatever), fake missing types, return
-//
-//            if not found, return empty
-//
-//
-//
-//------
-//    From camel description:
-//            ------
-//    Transform book types (BookCacheDTO, ResponseDTO, Book)
-//    Aggregate similar books
-//    Add missing types
 
     @Autowired
     private BookCacheRepository cacheRepository;
@@ -74,13 +46,11 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
             ProtoResponse response = ProtoResponse.newBuilder()
                     .setRetrieved(retrieved)
                     .build();
-
             responseObserver.onNext(response);
         } catch (NotFoundException e) {
             logger.error("gRPC request error \n[{}]", e);
             responseObserver.onError(e);
         }
-
         responseObserver.onCompleted();
     }
 
@@ -101,23 +71,21 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
 
         if (isbn != null && !isbn.isBlank()) {
             //Could check ISBN through SOAP-REST
-            System.out.println(isbn);
             var result = cacheRepository.findBookByIdAndRefreshExpiration(isbn);
-            System.out.println("isbn result: " + result);
             if (result != null) {
                 //early exit, cache had what we needed
-                isbnResponse.add(transformData(result));
+                isbnResponse.add(transformAndCacheData(result));
                 logger.info("Requested isbn resolved in cache\n[{}]", result);
                 return gson.toJson(isbnResponse);
             } else {
                 //not in cache, regular lookup
                 var resultInternal = bookRepository.findByIsbn(isbn);
-                var transformationInt = transformData(resultInternal);
+                var transformationInt = transformAndCacheData(resultInternal);
                 if (transformationInt != null) isbnResponse.add(transformationInt);
 
                 var resultExternal = externalService.getBooksByISBN(isbn);
-                var transformationExt = transformData(resultExternal);
-                if (transformationExt != null) isbnResponse.add(transformData(resultExternal));
+                var transformationExt = transformAndCacheData(resultExternal);
+                if (transformationExt != null) isbnResponse.add(transformAndCacheData(resultExternal));
             }
         }
 
@@ -125,29 +93,29 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
         List<ResponseDTO> authorResponse = new ArrayList<>();
         if (authors.size() > 0) {
             var resultInternal = bookRepository.findByAuthors(authors.toArray(new String[0]));
-            var transformationInt = transformData(resultInternal);
+            var transformationInt = transformAndCacheData(resultInternal);
             if (transformationInt != null) authorResponse.addAll(transformationInt);
 
-            var resultExternal = externalService.getBooksByAuthor(authors); //todo needs own method :(
-            var transformationExt = transformData(resultExternal);
-            if (transformationExt != null) authorResponse.add(transformationExt); //todo needs other add too, probably
+            var resultExternal = externalService.getBooksByAuthor(authors); //todo needs own method maybe, if multiBook
+            var transformationExt = transformAndCacheData(resultExternal);
+            if (transformationExt != null) authorResponse.add(transformationExt); //todo needs other add too, maybe
         }
 
 
         List<ResponseDTO> titleResponse = new ArrayList<>();
         if (title != null && !title.isBlank()) {
             var resultInternal = bookRepository.findByTitle(title);
-            var transformationInt = transformData(resultInternal);
+            var transformationInt = transformAndCacheData(resultInternal);
             if (transformationInt != null) titleResponse.addAll(transformationInt);
 
-            var resultExternal = externalService.getBooksByTitle(title); //todo needs own method :(
-            var transformationExt = transformData(resultExternal);
-            if (transformationExt != null) titleResponse.add(transformationExt);//todo needs other add too, probably
+            var resultExternal = externalService.getBooksByTitle(title); //todo needs own method maybe, if multiBook
+            var transformationExt = transformAndCacheData(resultExternal);
+            if (transformationExt != null) titleResponse.add(transformationExt);//todo needs other add too, maybe
         }
 
-        //todo put in cache before return as bookcachedto
-        //todo Save everything as BookCacheDTO (constructor..) to the cache
+
         //todo jsonObject constructor in ResponseDTO
+        //  should be able to handle multi (author, title)
 
 
         JsonObject obj = new JsonObject();
@@ -163,16 +131,17 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
     /**
      * Utility method to transform cache items from data stores to purchaseable OrderItems
      */
-    private ResponseDTO transformData(BookCacheDTO book) {
+    private ResponseDTO transformAndCacheData(BookCacheDTO book) {
         if (book == null) return null;
-        ResponseDTO transformation = new ResponseDTO(book);
-        return arrangeFields(transformation);
+        ResponseDTO transformation = arrangeFields(new ResponseDTO(book));
+        cacheRepository.saveBook(new BookCacheDTO(transformation));
+        return transformation;
     }
 
     /**
      * Utility method to transform data from external data stores to purchaseable OrderItems
      */
-    private ResponseDTO transformData(String book) {
+    private ResponseDTO transformAndCacheData(String book) {
         if (book == null || book.isBlank()) return null;
         ResponseDTO transformation;
 
@@ -183,34 +152,35 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
 
         System.out.println("String book to JsonElement::\n" + intermediary.toString());
 
-        if (intermediary.get("numFound").getAsInt() == 0) {//api error message
+        if (intermediary.get("numFound").getAsInt() == 0) {
+            //api error message
             logger.info("External API did not find book");
             return null;
         }
 
-        //Create new ResponseDTO based on JsonObject
-        transformation = new ResponseDTO(intermediary);
-
-        return arrangeFields(transformation);
+        transformation = arrangeFields(new ResponseDTO(intermediary));
+        //cacheRepository.saveBook(new BookCacheDTO(transformation)); //todo, add back in after responseDTO has been fixed
+        return transformation;
     }
 
     /**
      * Utility method to transform data from internal data stores to purchaseable OrderItems
      */
-    private ResponseDTO transformData(Book book) {
+    private ResponseDTO transformAndCacheData(Book book) {
         if (book == null) return null;
-        ResponseDTO transformation = new ResponseDTO(book);
-        return arrangeFields(transformation);
+        ResponseDTO transformation = arrangeFields(new ResponseDTO(book));
+        cacheRepository.saveBook(new BookCacheDTO(transformation));
+        return transformation;
     }
 
     /**
      * Utility method to transform data from internal data stores to purchaseable OrderItems
      */
-    private List<ResponseDTO> transformData(List<Book> books) {
+    private List<ResponseDTO> transformAndCacheData(List<Book> books) {
         List<ResponseDTO> result = new ArrayList<>();
         for (Book book : books) {
             if (book == null) continue;
-            result.add(transformData(book));
+            result.add(transformAndCacheData(book));
         }
         return result;
     }
