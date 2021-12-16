@@ -67,8 +67,8 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
         String title = request.getTitle();
 
 
+        //Handle ISBN
         List<ResponseDTO> isbnResponse = new ArrayList<>();
-
         if (isbn != null && !isbn.isBlank()) {
             //Could check ISBN through SOAP-REST
             var result = cacheRepository.findBookByIdAndRefreshExpiration(isbn);
@@ -90,6 +90,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
         }
 
 
+        //Handle authors
         List<ResponseDTO> authorResponse = new ArrayList<>();
         if (authors.size() > 0) {
             var resultInternal = bookRepository.findByAuthors(authors.toArray(new String[0]));
@@ -102,6 +103,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
         }
 
 
+        //Handle title
         List<ResponseDTO> titleResponse = new ArrayList<>();
         if (title != null && !title.isBlank()) {
             var resultInternal = bookRepository.findByTitle(title);
@@ -113,11 +115,13 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
             if (transformationExt != null) titleResponse.add(transformationExt);//todo needs other add too, maybe
         }
 
+        //todo
+        //  should be able to handle multi json objects (author, title), see its transform method
+        //  maybe need to set location? external is set in constructor, assume database is set? no, make a check and set it.
+        //  test
 
-        //todo jsonObject constructor in ResponseDTO
-        //  should be able to handle multi (author, title)
 
-
+        //Transform to JSON and return
         JsonObject obj = new JsonObject();
         obj.add("isbn", gson.toJsonTree(isbnResponse));
         obj.add("authors", gson.toJsonTree(authorResponse));
@@ -157,6 +161,10 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
             logger.info("External API did not find book");
             return null;
         }
+
+        //Load as array
+        //Get only some results
+        //For every array element, use new ResponseDTO constructor
 
         transformation = arrangeFields(new ResponseDTO(intermediary));
         //cacheRepository.saveBook(new BookCacheDTO(transformation)); //todo, add back in after responseDTO has been fixed
@@ -201,7 +209,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
             dto.setPrice(randomizePrice());
             System.out.println(String.format("Arranging field price, was: %d and is now %d", _price, dto.getPrice()));
         }
-        if (_quantity == 0) { //uninitialized int === 0. Or, if the warehouse is empty, we add some more!!
+        if (_quantity == 0 || _quantity == -1) { //uninitialized int === 0. Or, if the warehouse is empty, we add some more!!
             dto.setQuantity(randomizeQuantity());
             System.out.println(String.format("Arranging field quantity, was: %d and is now %d", _quantity, dto.getQuantity()));
         }

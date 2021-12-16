@@ -1,5 +1,7 @@
 package holdkrykke.cacheservice.models.grpc;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import holdkrykke.cacheservice.models.Book.Book;
@@ -9,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 @Data
 @AllArgsConstructor
@@ -53,7 +57,30 @@ public class ResponseDTO implements Serializable {
         this.quantity = book.getQuantity();
     }
 
+    /**
+     * Create a ResponseDTO from a JsonObject (from the external API)
+     *
+     * @param intermediary
+     */
     public ResponseDTO(JsonObject intermediary) {
-        //intermediary.get("blah");
+        this.isbn = intermediary.getAsJsonArray("isbn").get(0).getAsString();
+        this.title = intermediary.get("title").getAsString();
+        this.authors = toStringArray(intermediary.getAsJsonArray("author_name"));
+        this.location = "external";
+        //Rest is handled by ProtoService
+        this.type = "";
+        this.price = null;
+        this.quantity = -1;
+    }
+
+    private static String[] toStringArray(JsonArray array) {
+        if (array == null)
+            return null;
+
+        String[] result = new String[array.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = array.get(i).getAsString();
+        }
+        return result;
     }
 }
