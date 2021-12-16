@@ -107,44 +107,43 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
             //Could check ISBN through SOAP-REST
             System.out.println(isbn);
             var result = cacheRepository.findBookByIdAndRefreshExpiration(isbn);
+            System.out.println("isbn result: " + result);
             if (result != null) {
                 //early exit, cache had what we needed
                 isbnResponse.add(transformData(result));
                 logger.info("Requested isbn resolved in cache\n[{}]", result);
                 return gson.toJson(isbnResponse);
+            } else {
+                //not in cache, regular lookup
+                var resultInternal = bookRepository.findByIsbn(isbn);
+                isbnResponse.add(transformData(resultInternal));
+                var resultExternal = externalService.getBooksByISBN(isbn);
+                isbnResponse.add(transformData(resultExternal));
             }
-        } else {
-            System.out.println("Blank isbn");
         }
 
 
         List<ResponseDTO> authorResponse = new ArrayList<>();
-
         if (authors.size() > 0) {
             var resultInternal = bookRepository.findByAuthors(authors.toArray(new String[0]));
             authorResponse.addAll(transformData(resultInternal));
             var resultExternal = externalService.getBooksByAuthor(authors); //todo needs own method :(
             authorResponse.add(transformData(resultExternal)); //todo needs other add too, probably
-
-        } else {
-            System.out.println("Blank author");
         }
 
+
         List<ResponseDTO> titleResponse = new ArrayList<>();
-
-
         if (title != null && !title.isBlank()) {
             System.out.println(title);
             var resultInternal = bookRepository.findByTitle(title);
             titleResponse.addAll(transformData(resultInternal));
             var resultExternal = externalService.getBooksByTitle(title); //todo needs own method :(
             titleResponse.add(transformData(resultExternal));//todo needs other add too, probably
-
-        } else {
-            System.out.println("Blank title");
         }
 
         //todo put in cache before return as bookcachedto
+        //todo Save everything as BookCacheDTO (constructor..) to the cache
+
         //todo call price/quantity if not already
         //todo transform to larger json string object
 
