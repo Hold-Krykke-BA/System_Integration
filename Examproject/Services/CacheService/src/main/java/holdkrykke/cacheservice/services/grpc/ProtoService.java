@@ -1,7 +1,6 @@
 package holdkrykke.cacheservice.services.grpc;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import holdkrykke.cacheservice.exceptions.NotFoundException;
 import holdkrykke.cacheservice.models.Book.Book;
 import holdkrykke.cacheservice.models.grpc.ResponseDTO;
@@ -18,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -26,7 +27,11 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
     private static final Logger logger = LoggerFactory.getLogger(ProtoService.class);
-    private Gson gson = new Gson();
+    private Gson gson = new GsonBuilder().registerTypeAdapter(Double.class, (JsonSerializer<Double>) (src, typeOfSrc, context) -> {
+        DecimalFormat df = new DecimalFormat("#,00"); //todo fix json double representation. Try 0,00 if issues
+        df.setRoundingMode(RoundingMode.CEILING);
+        return new JsonPrimitive(Double.parseDouble(df.format(src)));
+    }).create();
 
     @Autowired
     private BookCacheRepository cacheRepository;
@@ -162,12 +167,16 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
             return null;
         }
 
+        //todo multipleResponses (check if numFound > 1, else just add the one)
         //Load as array
         //Get only some results
         //For every array element, use new ResponseDTO constructor
 
-        transformation = arrangeFields(new ResponseDTO(intermediary));
-        //cacheRepository.saveBook(new BookCacheDTO(transformation)); //todo, add back in after responseDTO has been fixed
+        //Object is typically object.array[0].object
+        //In the form of object["docs"][0][value]
+        transformation = arrangeFields(new ResponseDTO(intermediary.getAsJsonArray("docs").get(0).getAsJsonObject()));
+        cacheRepository.saveBook(new BookCacheDTO(transformation));
+        System.out.println("JsonString transformation result: " + transformation);
         return transformation;
     }
 
@@ -207,7 +216,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
 
         if (_price == null) {
             dto.setPrice(randomizePrice());
-            System.out.println(String.format("Arranging field price, was: %d and is now %d", _price, dto.getPrice()));
+            System.out.println(String.format("Arranging field price, was: %6.2f and is now %6.2f", _price, dto.getPrice()));
         }
         if (_quantity == 0 || _quantity == -1) { //uninitialized int === 0. Or, if the warehouse is empty, we add some more!!
             dto.setQuantity(randomizeQuantity());
@@ -215,7 +224,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
         }
         if (_type == null || _type.isBlank()) {
             dto.setType(randomizeType());
-            System.out.println(String.format("Arranging field type, was: %d and is now %d", _type, dto.getType()));
+            System.out.println(String.format("Arranging field type, was: %s and is now %s", _type, dto.getType()));
         }
         return dto;
     }
@@ -224,10 +233,10 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
      * Utility method to randomize price if missing
      */
     private double randomizePrice() {
-        int max = 1050;
+        int max = 750;
         int min = 50;
-        float price = ThreadLocalRandom.current().nextFloat() * (max - min) + min;
-        float priceRounded = (float) Math.round(price * 100.0f) / 100.0f;
+        double price = ThreadLocalRandom.current().nextDouble() * (max - min) + min;
+        double priceRounded = (double) Math.round(price * 100.0f) / 100.0f;
         return priceRounded;
     }
 
@@ -237,7 +246,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
     private int randomizeQuantity() {
         int max = 500;
         int min = 2;
-        int quantity = ThreadLocalRandom.current().nextInt() * (max - min) + min;
+        int quantity = ThreadLocalRandom.current().nextInt(min, max + 1);
         return quantity;
     }
 
