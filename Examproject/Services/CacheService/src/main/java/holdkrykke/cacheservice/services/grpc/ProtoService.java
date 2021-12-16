@@ -1,6 +1,7 @@
 package holdkrykke.cacheservice.services.grpc;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import holdkrykke.cacheservice.exceptions.NotFoundException;
 import holdkrykke.cacheservice.models.Book.Book;
 import holdkrykke.cacheservice.models.grpc.ResponseDTO;
@@ -15,12 +16,16 @@ import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
     private static final Logger logger = LoggerFactory.getLogger(ProtoService.class);
+    private Gson gson = new Gson();
 
 //    getBook from gRPC
 //
@@ -49,7 +54,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
 //    Add missing types
 
     @Autowired
-    private BookCacheRepository redisRepo;
+    private BookCacheRepository cacheRepository;
 
     @Autowired
     private BookRepository bookRepository;
@@ -84,7 +89,6 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
      * @throws NotFoundException
      */
     private String handleRequest(RegisterRequest request) throws NotFoundException {
-        Gson gson = new Gson();
         String isbn = request.getIsbn();
         List<String> authors = request.getAuthorsList();
         String title = request.getTitle();
@@ -95,16 +99,18 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
         //author: <null>
         //title: <null>
         //todo may be useful to create exit condition for isbn cache lookup instead, so it can do the last part of the flow too
+        //todo jsonObject constructor in ResponseDTO
 
         List<ResponseDTO> isbnResponse = new ArrayList<>();
 
         if (isbn != null && !isbn.isBlank()) {
             //Could check ISBN through SOAP-REST
             System.out.println(isbn);
-            var result = redisRepo.findBookByIdAndRefreshExpiration(isbn);
+            var result = cacheRepository.findBookByIdAndRefreshExpiration(isbn);
             if (result != null) {
                 //early exit, cache had what we needed
                 isbnResponse.add(transformData(result));
+                logger.info("Requested isbn resolved in cache\n[{}]", result);
                 return gson.toJson(isbnResponse);
             }
         } else {
@@ -138,6 +144,7 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
             System.out.println("Blank title");
         }
 
+        //todo put in cache before return as bookcachedto
         //todo call price/quantity if not already
         //todo transform to larger json string object
 
@@ -148,40 +155,80 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
      * Utility method to transform cache items from data stores to purchaseable OrderItems
      */
     private ResponseDTO transformData(BookCacheDTO book) {
-        //Create constructor to copy values
-        throw new UnsupportedOperationException();
-
+        ResponseDTO transformation = new ResponseDTO(book);
+        return arrangeFields(transformation);
     }
 
     /**
      * Utility method to transform data from external data stores to purchaseable OrderItems
      */
     private ResponseDTO transformData(String book) {
-        //How?
-        throw new UnsupportedOperationException();
+        ResponseDTO transformation;
+
+        System.out.println("String book found!::\n" + book);
+
+        //Parse from String to JsonObject
+        var intermediary = gson.fromJson(book, JsonObject.class);
+
+        System.out.println("String book to JsonElement::\n" + intermediary.toString());
+
+        //Create new ResponseDTO based on JsonObject
+        transformation = new ResponseDTO(intermediary);
+
+        return arrangeFields(transformation);
     }
 
     /**
      * Utility method to transform data from internal data stores to purchaseable OrderItems
      */
     private ResponseDTO transformData(Book book) {
-        //Create constructor to copy values
-        throw new UnsupportedOperationException();
+        ResponseDTO transformation = new ResponseDTO(book);
+        return arrangeFields(transformation);
     }
 
     /**
      * Utility method to transform data from internal data stores to purchaseable OrderItems
      */
-    private List<ResponseDTO> transformData(List<Book> book) {
-        //For item in list, call transformData(book)
-        throw new UnsupportedOperationException();
+    private List<ResponseDTO> transformData(List<Book> books) {
+        List<ResponseDTO> result = new ArrayList<>();
+        for (Book book : books) {
+            result.add(transformData(book));
+        }
+        return result;
+    }
+
+    /**
+     * Arranges missing but necessary fields on a ResponseDTO.
+     *
+     * @param dto
+     * @return the DTO with fixes in-place
+     */
+    private ResponseDTO arrangeFields(ResponseDTO dto) {
+        var _price = dto.getPrice();
+        var _quantity = dto.getQuantity();
+        var _type = dto.getType();
+
+
+        if (_price == null) {
+            dto.setPrice(randomizePrice());
+            System.out.println(String.format("Arranging field price, was: %d and is now %d", _price, dto.getPrice()));
+        }
+        if (_quantity == -1) { //todo fix or move
+            dto.setQuantity(randomizeQuantity());
+            System.out.println(String.format("Arranging field quantity, was: %d and is now %d", _quantity, dto.getQuantity()));
+        }
+        if (_type == null || _type.isBlank()) {
+            dto.setType(randomizeType());
+            System.out.println(String.format("Arranging field type, was: %d and is now %d", _type, dto.getType()));
+        }
+        return dto;
     }
 
     /**
      * Utility method to randomize price if missing
      */
     private double randomizePrice() {
-        throw new UnsupportedOperationException();
+        return 100.25;
 
     }
 
@@ -189,7 +236,13 @@ public class ProtoService extends RegisterServiceGrpc.RegisterServiceImplBase {
      * Utility method to randomize quantity if missing
      */
     private int randomizeQuantity() {
-        throw new UnsupportedOperationException();
+        return 123;
+    }
 
+    /**
+     * Utility method to randomize book type if missing
+     */
+    private String randomizeType() {
+        return "book";
     }
 }
