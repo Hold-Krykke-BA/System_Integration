@@ -191,7 +191,7 @@ The human tasks in the Camunda process can be seen in the following gif:
 ![Human Task](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/camunda.gif?raw=true)  
 
 #### Spring Boot Mail
-In order to send emails to the customers during the order processing we are using the JavaMailSender. The result are mails looking like this:  
+We use google SMTP as our mail provider, and in order to send emails to the customers during the order processing we are using the JavaMailSender. The result are mails looking like this:  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/CustomerMail.PNG)  
 
 
