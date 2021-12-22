@@ -12,11 +12,9 @@
 The repository is hosted online on Github at https://github.com/Hold-Krykke-BA/System_Integration/tree/main/Examproject.
 
 ## Video
-The video describing this project, as required by the assignment, is hosted on youtube at ...
-
-```diff
-- todo add link when uploaded
-```
+The video describing this project, as required by the assignment, is hosted on:
+* [youtube](https://youtu.be/WdNOVrSR0tc)
+* The wideo will also be zipped with the project as an .mp4 file
 
 
 ## Table of Contents
