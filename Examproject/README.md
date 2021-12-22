@@ -74,7 +74,7 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 |  Docker | Containers running images of Kafka and Redis |
 |  H2 database | Internally used by embedded Camunda |
 |  MongoDB Atlas | Cloud NoSQL clustered database  |
-|  Apache Kafka |Used as a message broker between serives |
+|  Apache Kafka |Used as a message broker between services |
 |  Redis | Key-value store used for caching |
 |  gRPC |Remote procedure calls for getting books form our service|
 |  SOAP | Message protocol used by our service to validate ISBN|
