@@ -8,6 +8,17 @@
 ## Assignment Description
 * [Exam Assignment Document](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Docs/SI2021ExamAssignment.pdf)
 
+## Online repository
+The repository is hosted online on Github at https://github.com/Hold-Krykke-BA/System_Integration/tree/main/Examproject.
+
+## Video
+The video describing this project, as required by the assignment, is hosted on youtube at ...
+
+```diff
+- todo add link when uploaded
+```
+
+
 ## Table of Contents
 - [Process](#process)
   * [Business case](#business-case)
