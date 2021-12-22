@@ -78,7 +78,7 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 |  Redis | Key-value store used for caching |
 |  gRPC |Remote procedure calls for getting books form our service|
 |  BloomRPC |RPC client|
-|  Postman |REST client|
+|  Postman |HTTP client used for the REST endpoints|
 |  SOAP | Message protocol used by our service to validate ISBN|
 
 ## Services
