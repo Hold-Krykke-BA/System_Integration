@@ -59,7 +59,7 @@ The video describing this project, as required by the assignment, is hosted on y
 
 ## Process
 ### Business case
-Physical bookstore with a small monolithic online store (sells books, ebooks and audiobooks) has been acquired by a larger corporation. The online store should present the same to the customers, but the backend needs a complete overhaul to conform and comply with the corporation's requirements.
+A physical bookstore with a small monolithic online store (books, ebooks and audiobooks) has been acquired by a larger corporation. The online store should present the same to the customers, but the backend needs a complete overhaul to conform and comply with the corporation's requirements.
 
 ### System Diagram  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/SystemDiagramFinalRenamed.png)
@@ -94,6 +94,11 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 
 ## Services
 
+Each service have its own purpose, but there are some similarities.
+
+**Exceptions** are typically handled by Spring Boot, such as for the REST API's where Spring has integrated error handling - which is further customized in `application.properties`.  
+Custom exceptions can be found in the services own folder, such as the [Exceptions](Services/BookService/src/main/java/holdkrykke/Exceptions) folder for BookService.
+
 ### BookService
 
 #### Integrations and tools
@@ -104,6 +109,8 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 #### Description
 The service is responsible for adding new books to the MongoDB, and while doing so also validating the ISBN through an external SOAP API. The service is also responsible for keeping the quantity of a given book up-to-date in the MongoDB.
 
+The service exposes two REST API's, one for adding new books and one for validating ISBN as a proxy-service for the consumed SOAP API.
+
 #### MongoDB Atlas
 The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.  The database is written to when the `POST` endpoint `addBook` is triggered and when a Kafka message is consumed. 
 
@@ -112,9 +119,9 @@ The service consumes messages on the following format sent on the topic `salereg
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/cachingMSG.PNG)
 
 #### SOAP
-```diff
-- TODO
-```
+The SOAP API can be found [here](http://webservices.daehosting.com/services/ISBNService.wso) with accompanying WSDL file. It provides two methods, one for each ISBN format (ISBN10/ISBN13).
+
+The SOAP API is consumed by the service and a Client class ([ISBNValidationClient](Services/BookService/src/main/java/holdkrykke/bookservice/services/soap)) has been created, which exposes a single method `validateIsbn(isbn)`. This method distinguishes the input as being either of the ISBN formats and calls the appropriate method from the external API.
 
 ### CacheService
 
