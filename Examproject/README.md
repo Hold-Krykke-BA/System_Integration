@@ -121,6 +121,8 @@ When a Kafka message is consumed from the RegisterSale service, that prompts the
 The service consumes messages on the following format sent on the topic `saleregisteredcaching`:  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/cachingMSG.PNG)
 
+The messages are deserialized from JSON directly to the corresponding Java `Order` type for easy handling. The service ensures that the MongoDB Book Store is up-to-date on the sold books.
+
 #### SOAP
 The SOAP API can be found [here](http://webservices.daehosting.com/services/ISBNService.wso) with accompanying WSDL file. It provides two methods, one for each ISBN format (ISBN10/ISBN13).
 
@@ -141,7 +143,7 @@ The service is responsible for caching the quantity of the most accessed books f
 The application follows a certain flow for the gRPC requests, where priority is the cache over other data stores. The application converts data of various types (Strings, Java Objects, JSON) into a DTO return type and vice-versa. Once a data store other than the cache has been queried, the cache will immediately be updated with the new information. Individual items in the cache lasts for 5 minutes.
 
 #### External API
-We are using [openlibrary](https://openlibrary.org) as resource for our `External API` in the service. We are using the Spring Boot `RestTemplate` for this executing calls to this service and later transforms the return data (Strings, JSON) into the appropriate Java objects.
+We are using [openlibrary](https://openlibrary.org) as resource for our `External API` in the service. We are using the Spring Boot `RestTemplate` for this, executing calls to this service and later transforming the return data (Strings, JSON) into the appropriate Java objects.
 
 The external API provides many features and queries of mostly unknown proportion. The API is not fully documented, and constantly changing. Our service provides queries to the API based on three parameters: ISBN, title and authors.
 
@@ -193,7 +195,12 @@ Documents in the Orderstore are designed as follows:
 #### Apache Kafka
 The service produces messages on two topics, both can be seen in the following images:  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/KafkaMagicRegister.PNG)  
+Where the message payload is the order number.
+
+
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/KafkaMagicCacheTopics.PNG)  
+Where the payload is the whole order, with information necessary to update the book quantity.
+
 
 ### ProcessSaleService
 
@@ -204,7 +211,12 @@ The service produces messages on two topics, both can be seen in the following i
 * Apache Kafka
 
 #### Description
-The service is responsible for consuming incoming Kafka messages containing order numbers for new orders, polling the MongoDB for the orders, processing the orders via the embedded Camunda, changing the order status during the processing and sending out emails for the customers with order statuses. 
+The service is responsible for:
+- Consuming incoming Kafka messages containing order numbers for new orders
+- Polling the MongoDB for the orders
+- Processing the orders via the embedded Camunda
+- Changing the order status during the processing
+- Sending emails to the customers with order statuses. 
 
 #### Apache Kafka
 The service consumes messages on the following format sent on the topic `saleregisteredprocessing`:  
@@ -246,7 +258,3 @@ We use google SMTP as our mail provider, and in order to send emails to the cust
 
 ### CacheService-specific
 * Run the `compile` action in the `Maven Lifecycle` to compile the generated classes in the `target` foler, this is required for gRPC
-
-
-## Resources
-
