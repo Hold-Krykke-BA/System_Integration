@@ -13,7 +13,7 @@ The repository is hosted online on Github at https://github.com/Hold-Krykke-BA/S
 
 ## Video
 The video describing this project, as required by the assignment, is hosted on:
-* [youtube.com](https://youtu.be/WdNOVrSR0tc)
+* [youtube.com/watch?v=WdNOVrSR0tc](https://youtu.be/WdNOVrSR0tc)
 * The wideo will also be zipped with the project as an .mp4 file
 
 
