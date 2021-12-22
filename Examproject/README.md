@@ -144,10 +144,10 @@ The service exposes a gRPC server for for querying books stored either in the ca
 * Kafka 
 
 #### Description
-The service is responsible for receiving incoming orders, splitting them in two if they are mixed (digital/physical), storing the order(s) and producing Kafka messages on two topics, to announce that an order has been received and stored. 
+The service is responsible for receiving incoming orders, splitting them in two if they are mixed (digital/physical), storing the order(s) and producing Kafka messages on two topics, to announce that an order has been received and stored. The service exposes a REST endpoint to place an order `localhost:9002/kafka/register`.
 
 #### MongoDB Atlas
-The `createOrder(Order order)` endpoint in the KafkaOrderController saves the order to the MongoDB after some checks and possible splits have occured. The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.  
+The endpoint `localhost:9002/kafka/register` in the KafkaOrderController saves the order to the MongoDB after some checks and possible splits have occured. The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.  
 Documents in the Orderstore are designed as follows:  
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/mongoDBOrders.PNG)  
 
