@@ -111,8 +111,11 @@ The service is responsible for adding new books to the MongoDB, and while doing 
 
 The service exposes two REST API's, one for adding new books and one for validating ISBN as a proxy-service for the consumed SOAP API.
 
-#### MongoDB Atlas
-The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.  The database is written to when the `POST` endpoint `addBook` is triggered and when a Kafka message is consumed. 
+#### MongoDB Atlas BookStore
+The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.  
+The database is queried at two times:  
+When the `POST` endpoint `addBook` is queried for adding a new book.   
+When a Kafka message is consumed from the RegisterSale service, that prompts the service to decrement the quantity of the book in the database based on the sold amount.
 
 #### Apache Kafka
 The service consumes messages on the following format sent on the topic `saleregisteredcaching`:  
@@ -133,27 +136,45 @@ The SOAP API is consumed by the service and a Client class ([ISBNValidationClien
 * gRPC
  
 #### Description
-The service is responsible for caching the quantity of the most accessed books from both the `External API` and Mongo Atlas in the Redis key-value store. The service also exposes the gRPC server for querying.
+The service is responsible for caching the quantity of the most accessed books from both the `External API` and Mongo Atlas in the Redis key-value store. The service exposes a REST API for the Redis cache and also exposes the gRPC server for querying.
+
+The application follows a certain flow for the gRPC requests, where priority is the cache over other data stores. The application converts data of various types (Strings, Java Objects, JSON) into a DTO return type and vice-versa. Once a data store other than the cache has been queried, the cache will immediately be updated with the new information. Individual items in the cache lasts for 5 minutes.
 
 #### External API
-We are using the [openlibrary](https://openlibrary.org) ressource as our `External API` in the service. We are using the Spring Boot `RestTemplate` for this. 
+We are using [openlibrary](https://openlibrary.org) as resource for our `External API` in the service. We are using the Spring Boot `RestTemplate` for this executing calls to this service and later transforms the return data (Strings, JSON) into the appropriate Java objects.
+
+The external API provides many features and queries of mostly unknown proportion. The API is not fully documented, and constantly changing. Our service provides queries to the API based on three parameters: ISBN, title and authors.
+
+The external API is typically queried once a result is not available in the cache.
 
 #### Redis
-```diff
-- TODO
-```
-#### MongoDB Atlas
-The MongoDB connection is handled through spring with the use of extending the `MongoRepository`.  The database is queried when 
-```diff
-- ^ The database is queried when.... 
-```
+Redis is hosted in docker on an alpine image with the purpose of caching often-requested books, their quantities and location (internally, externally). For this we created a custom DTO. As it is a cache we had to investigate the best way to handle it, not only for Redis, but for use in a Spring Boot environment.
+
+Initially we designed the Redis solution as the others, using Spring Boot and their data store solution for Redis, the `RedisTemplate` and `RedisRepository`. We also looked at other Spring Caching solutions.  
+However, as we wanted to create custom queries and wanted support for custom caching (5-minute TimeToLive indexes), we abandoned the default RedisRepository and instead created our own adaption that still uses Spring Boot to connect to Redis.
+
+Redis is always queried first, and Redis is updated whenever one of the other data stores are queried.
+
+#### MongoDB Atlas BookStore
+The MongoDB connection is handled through Spring with an extended `MongoRepository`. It consists of a certain Book type, stored as a Document. This type is then converted to an item fit for returning through gRPC for use further down the application flow.
+
+The database is typically queried once a result is not available in the cache.
 
 #### Apache Camel
-```diff
-- TODO
-```
+Apache was planned and intended to be used for what it does best using Enterprise Integration Patterns:  
+- Handling transportation between the three data stores
+- Transforming the data to the neccessary types (From several data sources into the DTOs for caching books and the gRPC return method)
+- Aggregating same book results (i.e., same book in internal and external store) according to business rules
+- Validating the input type and output type
+- Handling fields that may be empty at times, such as books from the external API that did not have page numbers noted.
+
+Due to time constraints, but also dependency issues, we were not able to complete this to the deadline. Instead we implemented what was written above using Java, Spring, Google Gson and various other methods.
+
+We intend to continue with this implementation of Apache Camel, or otherwise implement it in our application, in the time between the deadline and the presentation.
+
+
 #### gRPC
-The service exposes a gRPC server for for querying books stored either in the cache, the External API og MongoDB. The service is generated from a `.proto` file when Maven compiles. We use BloomRPC as the client. 
+The service exposes a gRPC server for for querying books stored either in the cache, the External API og MongoDB. The service is generated from a `.proto` file when Maven compiles. We use BloomRPC as the client to connect to the gRPC endpoint at port `6000`.
 
 ### RegisterSaleService
 
