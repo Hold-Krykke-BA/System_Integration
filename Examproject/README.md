@@ -54,15 +54,14 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 ![image](https://github.com/Hold-Krykke-BA/System_Integration/blob/main/Examproject/Diagrams/SystemDiagramFinal.PNG)
 
 ### Requirements
-* Integration with corporations central-European storage facility database
-* Country-specific storage facility with database
-* Caching of the number of available books local and remote
-* Storage of order data in cloud storage
-* Employees validate sale of physical books in a BPMN process
-  * Ebook/audiobook sales do not require human validation
-* Customer receives Order and Shipping confirmation mail
-* Validation of ISBN when adding new books to the database
-* Inter-service-communication where necessary
+* Caching the number of available books local and remote
+* Integration with the  corporations remote storage facility database
+* Country-specific local storage facility with a cloud hosted database
+* Validation of ISBN when adding new books 
+* Storage of order data in a cloud hosted database
+* Microservice choreography when necessary
+* Handling book sales in a BPMN process based on the order item being digital or physical
+* Customers receiving Order and Shipping confirmation by mail
 * Logging in all services
 
 ### Technologies
