@@ -77,6 +77,8 @@ Physical bookstore with a small monolithic online store (sells books, ebooks and
 |  Apache Kafka |Used as a message broker between services |
 |  Redis | Key-value store used for caching |
 |  gRPC |Remote procedure calls for getting books form our service|
+|  BloomRPC |RPC client|
+|  Postman |REST client|
 |  SOAP | Message protocol used by our service to validate ISBN|
 
 ## Services
